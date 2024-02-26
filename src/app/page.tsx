@@ -1,8 +1,7 @@
 "use client"
-import { Category } from "@/types/api_res";
+import { Category } from "@/types/api_res/category";
 import api from "@/utils/instants";
 import { useEffect, useState } from "react";
-import useSWR from "swr";
 import Content from "@/components/Main/Content";
 import CategorySideBar from "@/components/Main/Category";
 
