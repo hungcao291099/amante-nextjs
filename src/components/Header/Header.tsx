@@ -1,10 +1,11 @@
+import Link from "next/link";
 import { CiShoppingCart, CiUser } from "react-icons/ci";
 import { RiCustomerService2Fill } from "react-icons/ri";
 export default () => {
     return (
         <div className=" w-full fixed bg-slate-50 flex justify-center items-center pb-2 z-10 top-0">
             <div className="w-[1400px] rounded-md bg-white py-3 px-5 flex justify-between">
-                <img src="/logo/pc_logo.png" alt="amante-logo" />
+                <Link href={`/`}><img src="/logo/pc_logo.png" alt="amante-logo" /></Link>
                 <div className=" inline-flex items-center gap-2 border-gray-500 border-[1px] rounded-lg w-2/5 px-2">
                     <img src="/icon/search-icon.png" alt="" className=" w-fit h-fit my-auto mx-2" />
                     <input type="text" placeholder="검색어를 입력해주세요" className=" border-none w-full outline-none" />
