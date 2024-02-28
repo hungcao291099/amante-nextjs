@@ -20,7 +20,6 @@ export default () => {
                 });
 
                 setCategory(data.data);
-                console.log(data.data.data);
 
             } catch (error) {
                 console.log(error);
