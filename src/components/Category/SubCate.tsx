@@ -13,8 +13,12 @@ export default () => {
 
     const [showNested, setShowNested] = useState<ShowNestedState>({});
     const [TotalProps, setTotalProps] = useState<TotalProp>()
-    const searchParams = useSearchParams()
-    let CAT_CODE = searchParams.get('CAT_CODE')
+    const searchParams = useSearchParams();
+let CAT_CODE: string | null = null;
+
+if (searchParams !== null && searchParams !== undefined) {
+    CAT_CODE = searchParams.get('CAT_CODE');
+}
     const { push } = useRouter()
     const [CategoryList, setCategoryList] = useState<(Data[])>([])
     const [CategoryList2, setCategoryList2] = useState<(Cate_list_2[])>([])
@@ -45,10 +49,6 @@ export default () => {
                             push("/")
                     }
                 }
-
-
-
-
 
             } catch (error) {
                 console.log(error);

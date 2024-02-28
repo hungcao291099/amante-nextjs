@@ -5,8 +5,15 @@ import { useEffect, useState } from "react";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { IoGrid, IoListOutline } from "react-icons/io5";
 import ProductItem from "../ProductList/ProductItem";
+import { useSearchParams } from "next/navigation";
 export default () => {
     const [ProductList, setProductList] = useState<ProductList>()
+    const searchParams = useSearchParams();
+    let CAT_CODE: string | null = null;
+    if (searchParams !== null && searchParams !== undefined) {
+        CAT_CODE = searchParams.get('CAT_CODE');
+    }
+    
     useEffect(() => {
         const fetchData = async () => {
             try {
