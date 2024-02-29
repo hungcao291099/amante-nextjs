@@ -14,11 +14,11 @@ export default () => {
     const [showNested, setShowNested] = useState<ShowNestedState>({});
     const [TotalProps, setTotalProps] = useState<TotalProp>()
     const searchParams = useSearchParams();
-let CAT_CODE: string | null = null;
+    let CAT_CODE: string | null = null;
 
-if (searchParams !== null && searchParams !== undefined) {
-    CAT_CODE = searchParams.get('CAT_CODE');
-}
+    if (searchParams !== null && searchParams !== undefined) {
+        CAT_CODE = searchParams.get('CAT_CODE');
+    }
     const { push } = useRouter()
     const [CategoryList, setCategoryList] = useState<(Data[])>([])
     const [CategoryList2, setCategoryList2] = useState<(Cate_list_2[])>([])
@@ -76,10 +76,7 @@ if (searchParams !== null && searchParams !== undefined) {
         [key: string]: boolean;
     }
     const handleShow = (category_cd: string) => {
-        setShowNested(prevState => ({
-            ...prevState,
-            [category_cd]: !prevState[category_cd]
-        }));
+        var showlist = document.querySelector(`#CAT_${category_cd}`)
     };
     console.log(">>>>>>1", CategoryList);
     console.log(">>>>>>2", CategoryList2);
@@ -96,18 +93,18 @@ if (searchParams !== null && searchParams !== undefined) {
                                 <li className="flex flex-col ">
                                     <div className="flex gap-2 justify-between items-center p-2 my-1"><Link href={`/shop/product/product_list?CAT_CODE=${cate2.CAT_CODE}`} className=" text-black  hover:text-teal-900 hover-underline-animation"><p>{cate2.CAT_NAME}</p></Link>
                                         {(cate2.cate_list_3 as Cate_list_3[]).length > 0 ? (
-                                            <MdOutlineKeyboardArrowDown size={30} className=" p-2 hover:bg-gray-200 hover:cursor-pointer hover:rounded-md" onClick={() => handleShow(cate2.CAT_CODE.toString())} />
+                                            <MdOutlineKeyboardArrowDown size={30} className=" p-2 hover:bg-gray-200 hover:cursor-pointer hover:rounded-md hover:duration-150" onClick={() => handleShow(cate2.CAT_CODE.toString())} />
                                         ) : null}
                                     </div>
-                                    {showNested[cate2.CAT_CODE] && (
-                                        <ul className=" w-fit ml-5">
-                                            {(cate2.cate_list_3 as Cate_list_3[])?.map((cate3: Cate_list_3) => (
-                                                <Link key={cate3.CAT_CODE} href={`/shop/product/product_list?CAT_CODE=${cate3.CAT_CODE}`}>
-                                                    <li className="py-2 text-sm text-gray-500 hover:text-teal-600">{cate3.CAT_NAME}</li>
-                                                </Link>
-                                            ))}
-                                        </ul>
-                                    )}
+
+                                    <ul className=" w-fit ml-5" id={`CAT_${cate2.CAT_CODE}`}>
+                                        {(cate2.cate_list_3 as Cate_list_3[])?.map((cate3: Cate_list_3) => (
+                                            <Link key={cate3.CAT_CODE} href={`/shop/product/product_list?CAT_CODE=${cate3.CAT_CODE}`}>
+                                                <li className="py-2 text-sm text-gray-500 hover:text-teal-600 ">{cate3.CAT_NAME}</li>
+                                            </Link>
+                                        ))}
+                                    </ul>
+
                                 </li>
                             ))}
                             {CategoryList2.map(cate3 => (

@@ -13,7 +13,7 @@ export default () => {
     if (searchParams !== null && searchParams !== undefined) {
         CAT_CODE = searchParams.get('CAT_CODE');
     }
-    
+    const [ListMode, setListMode] = useState(false)
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -52,13 +52,13 @@ export default () => {
                     <IoMdArrowDropdown />
                 </div>
                 <div className=" flex justify-center items-center gap-1">
-                    <IoGrid size={30} className=" p-1 border-[1px] border-gray-500 rounded-md" />
-                    <IoListOutline size={30} className=" p-1 border-[1px] border-gray-500 rounded-md" />
+                    <IoGrid size={30} color={`${!ListMode ? "#0F766E" : ""}`} className={`${!ListMode ? "border-[#0F766E]" : "border-gray-500"} p-1 border-[1px] rounded-md hover:cursor-pointer`} onClick={() => setListMode(false)} />
+                    <IoListOutline size={30} color={`${ListMode ? "#0F766E" : ""}`} className={`${ListMode ? "border-[#0F766E]" : "border-gray-500"} p-1 border-[1px] rounded-md hover:cursor-pointer`} onClick={() => setListMode(true)} />
                 </div>
             </div>
-            <div className=" rounded-lg bg-white p-3 h-fit grid grid-cols-4">
+            <div className={`rounded-lg bg-white p-3 h-fit grid ${ListMode ? "grid-cols-1" : " grid-cols-4"}`}>
                 {ProductList?.response.map(product => (
-                    <ProductItem item={product} />
+                    <ProductItem item={product} list_mode={ListMode} />
                 ))}
             </div>
         </div>
