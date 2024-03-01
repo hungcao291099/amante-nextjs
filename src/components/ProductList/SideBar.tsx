@@ -11,7 +11,6 @@ import { BiCheckbox } from "react-icons/bi";
 import { useRouter } from "next/navigation";
 export default () => {
 
-    const [showNested, setShowNested] = useState<ShowNestedState>({});
     const [TotalProps, setTotalProps] = useState<TotalProp>()
     const searchParams = useSearchParams();
     let CAT_CODE: string | null = null;
@@ -72,53 +71,15 @@ export default () => {
         };
         fetchData();
     }, [CAT_CODE])
-    interface ShowNestedState {
-        [key: string]: boolean;
-    }
-    const handleShow = (category_cd: string) => {
-        var showlist = document.querySelector(`#CAT_${category_cd}`)
-    };
-    console.log(">>>>>>1", CategoryList);
-    console.log(">>>>>>2", CategoryList2);
+
 
     if ((CategoryList || CategoryList2 || CategoryLis3t) && TotalProps?.status)
         return (
             <div className=" relative ">
-                <div className=" w-[250px] fixed top-[84px] max-h-screen overflow-y-scroll no-scrollbar scroll-smooth pb-20">
-                    <div className="rounded-md bg-white p-2">
-                        <p className=" font-bold my-2 px-5">Sub Category</p>
-                        <ul className=" flex flex-col">
-
-                            {CategoryList[0]?.cate_list_2.map((cate2) => (
-                                <li className="flex flex-col ">
-                                    <div className="flex gap-2 justify-between items-center p-2 my-1"><Link href={`/shop/product/product_list?CAT_CODE=${cate2.CAT_CODE}`} className=" text-black  hover:text-teal-900 hover-underline-animation"><p>{cate2.CAT_NAME}</p></Link>
-                                        {(cate2.cate_list_3 as Cate_list_3[]).length > 0 ? (
-                                            <MdOutlineKeyboardArrowDown size={30} className=" p-2 hover:bg-gray-200 hover:cursor-pointer hover:rounded-md hover:duration-150" onClick={() => handleShow(cate2.CAT_CODE.toString())} />
-                                        ) : null}
-                                    </div>
-
-                                    <ul className=" w-fit ml-5" id={`CAT_${cate2.CAT_CODE}`}>
-                                        {(cate2.cate_list_3 as Cate_list_3[])?.map((cate3: Cate_list_3) => (
-                                            <Link key={cate3.CAT_CODE} href={`/shop/product/product_list?CAT_CODE=${cate3.CAT_CODE}`}>
-                                                <li className="py-2 text-sm text-gray-500 hover:text-teal-600 ">{cate3.CAT_NAME}</li>
-                                            </Link>
-                                        ))}
-                                    </ul>
-
-                                </li>
-                            ))}
-                            {CategoryList2.map(cate3 => (
-                                <li className="flex flex-col">
-                                    <div className="flex gap-2 justify-between items-center p-2 my-1">
-                                        <Link href={`/shop/product/product_list?CAT_CODE=${cate3.CAT_CODE}`} className=" text-black  hover:text-teal-900 hover-underline-animation"><p>{cate3.CAT_NAME}</p></Link>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                <div className=" w-[220px] pb-20 flex flex-col gap-3">
                     {TotalProps.response.map(prop => (
                         prop.DETAILED.length > 0 ? (
-                            <div className="rounded-md bg-white p-2 my-3">
+                            <div className="rounded-md bg-white p-2">
                                 <p className=" font-bold my-2 px-5">{prop.H_NAME}</p>
                                 {prop.H_CODE === "55_51" ? (
                                     <div className=" grid grid-cols-2 gap-4 ml-3">

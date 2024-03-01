@@ -9,8 +9,7 @@ export default function Main() {
 
 
   return (
-    <div className="w-[1400px] m-auto h-fit bg-slate-50 flex justify-between py-5">
-      <CategorySideBar />
+    <div className="w-[1200px] m-auto h-fit bg-slate-50 flex justify-between py-5">
       <Content />
     </div>
   )

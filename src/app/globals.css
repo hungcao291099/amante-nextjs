@@ -39,6 +39,10 @@
     position: relative;
   }
 
+  .hover-underline-animation:hover {
+    color: #B24934;
+  }
+
   .hover-underline-animation::after {
     content: '';
     position: absolute;
@@ -47,7 +51,7 @@
     height: 3px;
     bottom: -2px;
     left: 0;
-    background-color: #0D685B;
+    background-color: #B24934;
     transform-origin: bottom right;
     transition: transform 0.3s ease-out;
   }
@@ -65,7 +69,7 @@
     height: 3px;
     bottom: -2px;
     left: 0;
-    background-color: #0D685B;
+    background-color: #B24934;
   }
 
 }

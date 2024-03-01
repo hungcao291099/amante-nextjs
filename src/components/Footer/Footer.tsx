@@ -1,7 +1,7 @@
 export default () => {
     return (
-        <div className="w-[1400px] mx-auto flex justify-end">
-            <div className="w-[1130px] rounded-md bg-white py-3 px-5">
+        <div className="w-[full mx-auto bg-white flex justify-center">
+            <div className="w-[1200px] rounded-md  py-3 px-5">
                 <ul className=" inline-flex gap-10 text-xs font-bold">
                     <li><a href="">회사소개</a></li>
                     <li><a href="">이용안내</a></li>
