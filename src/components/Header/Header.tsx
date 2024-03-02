@@ -25,6 +25,7 @@ export default () => {
         fetchData();
     }, []);
 
+
     // -----------------------------------
     var cate_btn = document.getElementById("header_cate")
     var cate_area = document.getElementById("header_cate_area")
@@ -75,11 +76,11 @@ export default () => {
                                 <img className=" w-6 h-6" src="/svg/category.svg" alt="" />
                                 <p>카테고리</p>
                                 <div id="header_cate_area" className=" absolute top-0 left-0 -translate-x-4 p-3 flex gap-1 ">
-                                    <div id="header_cate_depth_1" className=" rounded-md border-gray-300 bg-white border-[1px] mt-10 w-48 hidden">
+                                    <div id="header_cate_depth_1" className=" rounded-md border-gray-300 bg-white border-[1px] mt-10 w-48 hidden h-fit">
                                         <ul>
                                             {categories?.data.map(cate1 => (
                                                 <Link href={`/shop/product/product_list?CAT_CODE=${cate1.CAT_CODE}`}>
-                                                    <li className=" p-2 text-gray-700 hover:text-rose-400  " onMouseEnter={() => { setCategory2(cate1.cate_list_2) }} >
+                                                    <li className={`p-2 text-gray-700 hover:text-rose-400 ${categories2[0]?.CAT_M_CODE === cate1.CAT_CODE ? "text-rose-400" : ""}`} onMouseEnter={() => { setCategory2(cate1.cate_list_2) }}  >
                                                         {cate1.CAT_NAME}
                                                     </li>
                                                 </Link>
@@ -87,11 +88,11 @@ export default () => {
                                             ))}
                                         </ul>
                                     </div>
-                                    <div id="header_cate_depth_2" className=" rounded-md border-gray-300 bg-white border-[1px]  mt-10 w-48 hidden">
+                                    <div id="header_cate_depth_2" className=" rounded-md border-gray-300 bg-white border-[1px]  mt-10 w-48 hidden h-fit">
                                         <ul>
                                             {categories2.map(cate2 => (
                                                 <Link href={`/shop/product/product_list?CAT_CODE=${cate2.CAT_CODE}`}>
-                                                    <li className=" p-2 text-gray-700 hover:text-rose-400  " onMouseEnter={() => setCategory3(cate2.cate_list_3)}>
+                                                    <li className={`p-2 text-gray-700 hover:text-rose-400 ${categories3[0]?.CAT_M_CODE === cate2.CAT_CODE ? "text-rose-400" : ""}`} onMouseEnter={() => setCategory3(cate2.cate_list_3)} >
                                                         {cate2.CAT_NAME}
                                                     </li>
                                                 </Link>
@@ -99,7 +100,7 @@ export default () => {
                                             ))}
                                         </ul>
                                     </div>
-                                    <div id="header_cate_depth_3" className=" rounded-md border-gray-300 bg-white border-[1px] mt-10 w-48 hidden">
+                                    <div id="header_cate_depth_3" className=" rounded-md border-gray-300 bg-white border-[1px] mt-10 w-48 hidden h-fit">
                                         <ul>
                                             {categories3.map(cate3 => (
                                                 <Link href={`/shop/product/product_list?CAT_CODE=${cate3.CAT_CODE}`}>

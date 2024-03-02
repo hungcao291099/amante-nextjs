@@ -73,42 +73,39 @@ export default () => {
     }, [CAT_CODE])
 
 
-    if ((CategoryList || CategoryList2 || CategoryLis3t) && TotalProps?.status)
-        return (
-            <div className=" relative ">
-                <div className=" w-[220px] pb-20 flex flex-col gap-3">
-                    {TotalProps.response.map(prop => (
-                        prop.DETAILED.length > 0 ? (
-                            <div className="rounded-md bg-white p-2">
-                                <p className=" font-bold my-2 px-5">{prop.H_NAME}</p>
-                                {prop.H_CODE === "55_51" ? (
-                                    <div className=" grid grid-cols-2 gap-4 ml-3">
-                                        {(prop.DETAILED as DETAILED[]).map(detail => (
+    return (
+        <div className=" w-[220px] pb-20 flex flex-col gap-3">
+            {(CategoryList || CategoryList2 || CategoryLis3t) && TotalProps?.status && TotalProps.response.map(prop => (
+                prop.DETAILED.length > 0 ? (
+                    <div className="rounded-md bg-white p-2">
+                        <p className=" font-bold my-2 px-5">{prop.H_NAME}</p>
+                        {prop.H_CODE === "55_51" ? (
+                            <div className=" grid grid-cols-2 gap-4 ml-3">
+                                {(prop.DETAILED as DETAILED[]).map(detail => (
 
-                                            <div className="flex gap-2">
-                                                <img className=" rounded-full border-[1px] border-black w-5 h-5" src={`https://www.amante.co.kr/uploads/product/color/color_${detail.D_CODE}.png`} alt="" />
-                                                <label className=" text-sm hover:cursor-pointer " htmlFor={`D_${detail.D_CODE}`}>{detail.D_NAME}</label>
-                                            </div>
-                                        ))}
+                                    <div className="flex gap-2">
+                                        <img className=" rounded-full border-[1px] border-black w-5 h-5" src={`https://www.amante.co.kr/uploads/product/color/color_${detail.D_CODE}.png`} alt="" />
+                                        <label className=" text-sm hover:cursor-pointer " htmlFor={`D_${detail.D_CODE}`}>{detail.D_NAME}</label>
                                     </div>
-                                ) : (
-                                    <div className=" flex flex-col gap-4 ml-3">
-                                        {(prop.DETAILED as DETAILED[]).map(detail => (
-                                            <div className="flex gap-2">
-                                                <input className=" accent-teal-700 w-4 h-4" type="checkbox" name="" id={`D_${detail.D_CODE}`} />
-                                                <label className=" text-sm hover:cursor-pointer" htmlFor={`D_${detail.D_CODE}`}>{detail.D_NAME}</label>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-
+                                ))}
                             </div>
-                        ) : null
+                        ) : (
+                            <div className=" flex flex-col gap-4 ml-3">
+                                {(prop.DETAILED as DETAILED[]).map(detail => (
+                                    <div className="flex gap-2">
+                                        <input className=" accent-teal-700 w-4 h-4" type="checkbox" name="" id={`D_${detail.D_CODE}`} />
+                                        <label className=" text-sm hover:cursor-pointer" htmlFor={`D_${detail.D_CODE}`}>{detail.D_NAME}</label>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
 
-                    ))}
+                    </div>
+                ) : null
 
-                </div>
-            </div>
-        )
+            ))}
+
+        </div>
+    )
 
 }
