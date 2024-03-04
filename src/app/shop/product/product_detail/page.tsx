@@ -5,21 +5,39 @@ import { GoHome } from "react-icons/go";
 import { IoMdArrowDropright } from "react-icons/io";
 import { Detail, FindCategory } from "@/types/api_res/Category/FindCategory"
 import Link from "next/link"
+import api from "@/utils/instants";
+import { Navi, PRODUCT_CODE_API_GET } from "@/types/api_res/ProductDetail/ProductCodeInfo";
 
 
 export default () => {
-    var navicate = window.localStorage.getItem("navi_cate")
-    const [NaviCate, setNaviCate] = useState<FindCategory>()
-    if (navicate != null) {
-        // setNaviCate(JSON.parse(navicate))
-        console.log(JSON.parse(navicate));
-
-    }
     const searchParams = useSearchParams();
+    let PRODUCT_CODE: string | null = null;
     let product_cd: string | null = null;
     if (searchParams !== null && searchParams !== undefined) {
+        PRODUCT_CODE = searchParams.get('PRODUCT_CODE');
         product_cd = searchParams.get('product_cd');
     }
+
+    const [ProductCodeRes, setProductCodeRes] = useState<PRODUCT_CODE_API_GET>()
+    const [NaviCate, setNaviCate] = useState<Navi>()
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await api({
+                    url: `/shop/product/product_list/find_category_product_code?PRODUCT_CODE=${PRODUCT_CODE}`,
+                    method: "GET",
+                });
+                setProductCodeRes(data.data);
+                console.log(data.data);
+
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchData();
+    }, []);
+
+
     const showNaviCate = (cat_code: number) => {
         var navi_cate_li = document.getElementById(`cate_navi_li_${cat_code}`)
         var navi_cate = document.getElementById(`cate_navi_${cat_code}`)
@@ -36,9 +54,10 @@ export default () => {
             <div className=" flex item-center justify-between">
                 <div className=" flex items-center gap-4">
                     <Link href={"/"}><GoHome size={20} /></Link>
+
                     <ul className=" text-sm flex gap-4">
-                        {NaviCate?.success &&
-                            NaviCate.data.map(cate =>
+                        {
+                            ProductCodeRes?.success && ProductCodeRes.data.Navi.map(cate =>
                                 <Link href={`/shop/product/product_list?CAT_CODE=${cate.CAT_CODE}`}>
                                     <li id={`cate_navi_li_${cate.CAT_CODE}`} className=" flex items-center gap-1 relative z-0" onMouseEnter={() => showNaviCate(cate.CAT_CODE)}>
                                         <IoMdArrowDropright />

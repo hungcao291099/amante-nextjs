@@ -33,11 +33,12 @@ const ProductListContent: React.FC<{ list_mode: Boolean }> = ({ list_mode }) => 
     }, [CAT_CODE]);
     return (
         <div className="w-[950px] flex flex-col gap-5 pb-3 rounded-md -z-1">
-            <div className={`rounded-lg bg-white h-fit grid ${list_mode ? "grid-cols-1" : " grid-cols-4"}`}>
+
+            <div className={`rounded-lg bg-white h-fit grid gap-2 ${list_mode ? "grid-cols-1" : " grid-cols-4"}`}>
+
                 {ProductList?.response.map(product => (
-                    <Link href={`/shop/product/product_detail?product_cd=${product.product_cd}`}>
-                        <ProductItem item={product} list_mode={list_mode} />
-                    </Link>
+                    <ProductItem item={product} list_mode={list_mode} />
+
                 ))}
             </div>
         </div>

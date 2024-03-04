@@ -73,6 +73,7 @@ export default () => {
     }, [CAT_CODE])
 
 
+
     return (
         <div className=" w-[220px] pb-20 flex flex-col gap-3">
             {(CategoryList || CategoryList2 || CategoryLis3t) && TotalProps?.status && TotalProps.response.map(prop => (
@@ -84,6 +85,7 @@ export default () => {
                                 {(prop.DETAILED as DETAILED[]).map(detail => (
 
                                     <div className="flex gap-2">
+                                        <input className=" accent-teal-700 w-4 h-4" type="checkbox" name="" id={`D_${detail.D_CODE}`} />
                                         <img className=" rounded-full border-[1px] border-black w-5 h-5" src={`https://www.amante.co.kr/uploads/product/color/color_${detail.D_CODE}.png`} alt="" />
                                         <label className=" text-sm hover:cursor-pointer " htmlFor={`D_${detail.D_CODE}`}>{detail.D_NAME}</label>
                                     </div>

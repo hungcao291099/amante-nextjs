@@ -1,11 +1,23 @@
 import { ProductItem } from "@/types/api_res/ProductList/ProductList"
 import { formatNumber } from "@/utils/function"
+import Link from "next/link";
 import { FaStar } from "react-icons/fa";
+import { LiaCartPlusSolid } from "react-icons/lia";
+import useCartModal from '@/hooks/useCartModal'
+
 const ProductItem: React.FC<{ item: ProductItem, list_mode: Boolean }> = ({ item, list_mode }) => {
+    const cartModal = useCartModal()
     return (
         list_mode ?
-            <div className="flex gap-4 my-5 h-48">
-                {item.file_nm ? <img className=" rounded-md" src={`https://www.amante.co.kr/uploads/product/285/${item.file_nm}`} alt="" /> : <img src="/images/pro_in_img.jpg" alt="" loading="lazy" />}
+            <div className="flex gap-4 h-max">
+                <div className=" relative h-max w-44">
+                    <Link href={`/shop/product/product_detail?PRODUCT_CODE=${item.PRODUCT_CODE}&product_cd=${item.product_cd}`}>
+                        {item.file_nm ? <img className=" rounded-md" src={`https://www.amante.co.kr/uploads/product/285/${item.file_nm}`} alt="" /> : <img src="/images/pro_in_img.jpg" alt="" loading="lazy" />}
+                    </Link>
+                    <div className="p-2 rounded-full bg-white absolute bottom-2 right-2 shadow-gray-400 shadow-md">
+                        <LiaCartPlusSolid size={20} />
+                    </div>
+                </div>
                 <div className=" flex flex-col gap-2 p-2">
                     <p className=" text-black font-bold">{item.product_nm}</p>
                     <p className=" text-gray-500 text-sm">{item.option_nm}</p>
@@ -33,7 +45,18 @@ const ProductItem: React.FC<{ item: ProductItem, list_mode: Boolean }> = ({ item
             </div>
             :
             <div className=" flex flex-col gap-2 p-2">
-                {item.file_nm ? <img className=" rounded-md" src={`https://www.amante.co.kr/uploads/product/285/${item.file_nm}`} alt="" /> : <img src="/images/pro_in_img.jpg" alt="" loading="lazy" />}
+                <div className=" relative">
+                    <Link href={`/shop/product/product_detail?PRODUCT_CODE=${item.PRODUCT_CODE}&product_cd=${item.product_cd}`}>
+
+                        {item.file_nm ? <img className=" rounded-md" src={`https://www.amante.co.kr/uploads/product/285/${item.file_nm}`} alt="" /> : <img src="/images/pro_in_img.jpg" alt="" loading="lazy" />}
+                    </Link>
+                    <div onClick={() => {
+                        cartModal.onOpen()
+                        cartModal.onGetData(item)
+                    }} className="p-3 rounded-full bg-white absolute bottom-3 right-3 shadow-gray-300 shadow-md ">
+                        <LiaCartPlusSolid size={25} />
+                    </div>
+                </div>
                 <p className=" text-black font-bold">{item.product_nm}</p>
                 <p className=" text-gray-500 text-sm">{item.option_nm}</p>
                 <div className=" flex gap-2 items-center">
