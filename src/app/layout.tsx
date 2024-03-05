@@ -13,7 +13,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className="text-gray-800 bg-slate-50 h-screen font-serif">
+      <body className="text-gray-800 bg-slate-50 h-screen">
         <Header />
         {children}
         <Footer />

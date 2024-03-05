@@ -59,16 +59,16 @@ const ProductItem: React.FC<{ item: ProductItem, list_mode: Boolean }> = ({ item
                 </div>
                 <p className=" text-black font-bold">{item.product_nm}</p>
                 <p className=" text-gray-500 text-sm">{item.option_nm}</p>
-                <div className=" flex gap-2 items-center">
+                <div className=" flex gap-2 justify-between items-center">
+                    <p className=" text-xl font-bold">{`${formatNumber(item.sale_price)}원`}</p>
                     {item.sale_price !== item.supply_price ? (
                         <div className=" flex gap-2 text-lg font-bold items-center">
-                            <p className=" text-gray-500 line-through text-base">{formatNumber(item.supply_price)}</p>
+                            <p className=" text-gray-500 line-through text-base font-normal">{formatNumber(item.supply_price)}</p>
                             <p className="  text-teal-700">{`${Math.round((item.sale_price / item.supply_price) * 100)}%`}</p>
                         </div>
                     ) : null
                     }
 
-                    <p className=" text-xl font-bold">{`${formatNumber(item.sale_price)}원`}</p>
                 </div>
                 <div className=" flex gap-2 items-center text-sm font-bold">
                     <FaStar size={20} color=" #0F766E" />

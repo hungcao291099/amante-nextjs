@@ -11,10 +11,24 @@ import { GoHome } from "react-icons/go";
 import { IoMdArrowDropright } from "react-icons/io";
 import { Detail, FindCategory } from "@/types/api_res/Category/FindCategory"
 import Link from "next/link"
+import { FaStar } from "react-icons/fa";
 
 export default () => {
     const [ListMode, setListMode] = useState(false)
     const [NaviCate, setNaviCate] = useState<FindCategory>()
+    const [Sort, setSort] = useState(0)
+    const sortString = ['베스트셀러', '추천순', '인기순', '높은 가격순', '낮은 가격순', '조회순', '최신순']
+    const [ShowSort, setShowSort] = useState(false)
+    const ratingStar = [
+        [1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 0],
+        [1, 1, 1, 0, 0],
+        [1, 1, 0, 0, 0],
+        [1, 0, 0, 0, 0],
+    ]
+    const [ShowRating, setShowRating] = useState(false)
+
+
     const searchParams = useSearchParams();
     let CAT_CODE: string | null = null;
     if (searchParams !== null && searchParams !== undefined) {
@@ -80,19 +94,39 @@ export default () => {
                     </div>
                     <div className="flex gap-4">
                         <div className=" flex items-center gap-3">
-                            <input className=" w-4 h-4" type="checkbox" name="" id="1" /><label htmlFor="1">모음전 보기</label>
+                            <input className=" w-4 h-4 accent-teal-700" type="checkbox" name="" id="1" /><label htmlFor="1">모음전 보기</label>
                         </div>
                         <div className=" flex items-center gap-3">
-                            <input className=" w-4 h-4" type="checkbox" name="" id="1" /><label htmlFor="1">특가 상품만</label>
+                            <input className=" w-4 h-4 accent-teal-700" type="checkbox" name="" id="2" /><label htmlFor="2">특가 상품만</label>
                         </div>
 
-                        <div className=" flex justify-center items-center p-1 gap-2 border-[1px] border-gray-500 rounded-md">
+                        <div className=" flex justify-center items-center p-1 gap-2 border-[1px] border-gray-500 rounded-md relative" onClick={() => ShowRating ? setShowRating(false) : setShowRating(true)}>
                             <p>별점</p>
                             <IoMdArrowDropdown />
+                            {ShowRating &&
+                                <div className="z-10 absolute top-0 right-0">
+                                    <ul className=" p-2 bg-white border-[1px] border-gray-500 rounded-md mt-10 drop-shadow-md shadow-md">
+                                        {ratingStar.map((x, index) => (
+                                            <li className="flex gap-2 w-max hover:text-[#f06652] hover:cursor-pointer p-1" >
+                                                <div className=" flex gap-1">{x.map(y => y === 1 ? <FaStar color="#f06652" /> : <FaStar color="#727476" />)} </div>
+                                                <p>{`${ratingStar.length - index} 이상`}</p>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>}
                         </div>
-                        <div className=" flex justify-center items-center p-1 gap-2 border-[1px] border-gray-500 rounded-md">
+                        <div className=" flex justify-center items-center p-1 gap-2 border-[1px] border-gray-500 rounded-md relative" onClick={() => { ShowSort ? setShowSort(false) : setShowSort(true) }}>
                             <p>베스트 셀러</p>
                             <IoMdArrowDropdown />
+                            {ShowSort && <div className=" z-10 absolute top-0 left-0">
+                                <ul className=" p-2 bg-white border-[1px] border-gray-500 rounded-md mt-10 drop-shadow-md shadow-md">
+                                    {sortString.map((sort, index) => (
+                                        <li className={`${Sort === index && " font-black"} w-max hover:cursor-pointer`} onClick={() => setSort(index)}>{sort}</li>
+
+                                    ))}
+
+                                </ul>
+                            </div>}
                         </div>
                         <div className=" flex justify-center items-center gap-1">
                             <IoGrid size={30} color={`${!ListMode ? "#0F766E" : ""}`} className={`${!ListMode ? "border-[#0F766E]" : "border-gray-500"} p-1 border-[1px] rounded-md hover:cursor-pointer`} onClick={() => setListMode(false)} />
