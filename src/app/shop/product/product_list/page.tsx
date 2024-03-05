@@ -12,8 +12,10 @@ import { IoMdArrowDropright } from "react-icons/io";
 import { Detail, FindCategory } from "@/types/api_res/Category/FindCategory"
 import Link from "next/link"
 import { FaStar } from "react-icons/fa";
+import useProductProps from "@/hooks/useProductProps"
 
 export default () => {
+    const ProductProps = useProductProps()
     const [ListMode, setListMode] = useState(false)
     const [NaviCate, setNaviCate] = useState<FindCategory>()
     const [Sort, setSort] = useState(0)
@@ -78,7 +80,7 @@ export default () => {
                                             <div id={`cate_navi_${cate.CAT_CODE}`} className=" absolute top-0 left-0 hidden">
                                                 <ul className="rounded-md border-gray-300 bg-white border-[1px] h-fit w-max">
                                                     {(cate.detail as Detail[]).map(cate2 => (
-                                                        <Link href={`/shop/product/product_list?CAT_CODE=${cate.CAT_CODE}`}>
+                                                        <Link href={`/shop/product/product_list?CAT_CODE=${cate2.CAT_CODE}`}>
                                                             <li className="p-2 text-gray-700 hover:text-rose-400 ">{cate2.CAT_NAME}</li>
                                                         </Link>
                                                     ))}
@@ -94,10 +96,10 @@ export default () => {
                     </div>
                     <div className="flex gap-4">
                         <div className=" flex items-center gap-3">
-                            <input className=" w-4 h-4 accent-teal-700" type="checkbox" name="" id="1" /><label htmlFor="1">모음전 보기</label>
+                            <input className=" w-4 h-4 accent-teal-700" type="checkbox" name="" id="cb_view_collection" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { ProductProps.setViewCollection(e.target.checked) }} /><label htmlFor="cb_view_collection">모음전 보기</label>
                         </div>
                         <div className=" flex items-center gap-3">
-                            <input className=" w-4 h-4 accent-teal-700" type="checkbox" name="" id="2" /><label htmlFor="2">특가 상품만</label>
+                            <input className=" w-4 h-4 accent-teal-700" type="checkbox" name="" id="cb_sale" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { ProductProps.setSale(e.target.checked) }} /><label htmlFor="cb_sale">특가 상품만</label>
                         </div>
 
                         <div className=" flex justify-center items-center p-1 gap-2 border-[1px] border-gray-500 rounded-md relative" onClick={() => ShowRating ? setShowRating(false) : setShowRating(true)}>
@@ -107,21 +109,25 @@ export default () => {
                                 <div className="z-10 absolute top-0 right-0">
                                     <ul className=" p-2 bg-white border-[1px] border-gray-500 rounded-md mt-10 drop-shadow-md shadow-md">
                                         {ratingStar.map((x, index) => (
-                                            <li className="flex gap-2 w-max hover:text-[#f06652] hover:cursor-pointer p-1" >
+                                            <li className="flex gap-2 w-max hover:text-[#f06652] hover:cursor-pointer p-1" onClick={() => { ProductProps.setPoint(ratingStar.length - index) }}>
                                                 <div className=" flex gap-1">{x.map(y => y === 1 ? <FaStar color="#f06652" /> : <FaStar color="#727476" />)} </div>
                                                 <p>{`${ratingStar.length - index} 이상`}</p>
                                             </li>
                                         ))}
+                                        <li className=" mt-2 p-1 text-center border-gray-400 border-[1px] rounded-md hover:cursor-pointer" onClick={() => { ProductProps.setPoint(0) }}>초기화</li>
                                     </ul>
                                 </div>}
                         </div>
-                        <div className=" flex justify-center items-center p-1 gap-2 border-[1px] border-gray-500 rounded-md relative" onClick={() => { ShowSort ? setShowSort(false) : setShowSort(true) }}>
-                            <p>베스트 셀러</p>
+                        <div className={`flex justify-center items-center p-1 gap-2 border-[1px] rounded-md relative ${ProductProps.sort === 0 ? "border-gray-500" : "border-[#f06652]"}`} onClick={() => { ShowSort ? setShowSort(false) : setShowSort(true) }}>
+                            <p>{sortString[ProductProps.sort]}</p>
                             <IoMdArrowDropdown />
                             {ShowSort && <div className=" z-10 absolute top-0 left-0">
                                 <ul className=" p-2 bg-white border-[1px] border-gray-500 rounded-md mt-10 drop-shadow-md shadow-md">
                                     {sortString.map((sort, index) => (
-                                        <li className={`${Sort === index && " font-black"} w-max hover:cursor-pointer`} onClick={() => setSort(index)}>{sort}</li>
+                                        <li className={`${Sort === index && " font-black"} w-max hover:cursor-pointer`} onClick={() => {
+                                            setSort(index)
+                                            ProductProps.setSort(index)
+                                        }}>{sort}</li>
 
                                     ))}
 

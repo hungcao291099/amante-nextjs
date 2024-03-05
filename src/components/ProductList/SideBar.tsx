@@ -9,8 +9,9 @@ import { Cate_list_2, Cate_list_3, Category, Data } from "@/types/api_res/catego
 import { DETAILED, Response, TotalProp } from "@/types/api_res/Category/TotalProps";
 import { BiCheckbox } from "react-icons/bi";
 import { useRouter } from "next/navigation";
+import useProductFilter from "@/hooks/useProductFilter";
 export default () => {
-
+    const ProductFilter = useProductFilter()
     const [TotalProps, setTotalProps] = useState<TotalProp>()
     const searchParams = useSearchParams();
     let CAT_CODE: string | null = null;
@@ -76,6 +77,11 @@ export default () => {
 
     return (
         <div className=" w-[220px] pb-20 flex flex-col gap-3">
+            {ProductFilter.filters.length > 0 &&
+                <div className="rounded-md bg-white p-2 flex justify-center items-center border-[1px] border-gray-400 hover:cursor-pointer du" onClick={() => ProductFilter.removeAll()}>
+                    <p>초기화</p>
+                </div>
+            }
             {(CategoryList || CategoryList2 || CategoryLis3t) && TotalProps?.status && TotalProps.response.map(prop => (
                 prop.DETAILED.length > 0 ? (
                     <div className="rounded-md bg-white p-2">
@@ -85,7 +91,11 @@ export default () => {
                                 {(prop.DETAILED as DETAILED[]).map(detail => (
 
                                     <div className="flex gap-2">
-                                        <input className=" accent-teal-700 w-4 h-4" type="checkbox" name="" id={`D_${detail.D_CODE}`} />
+                                        <input className=" accent-teal-700 w-4 h-4" type="checkbox" name="" id={`D_${detail.D_CODE}`}
+                                            checked={ProductFilter.filters.some(x => x.option_id === detail.D_CODE)}
+                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                e.target.checked ? ProductFilter.setFilter(detail.D_CODE, detail.D_NAME) : ProductFilter.removeFilter(detail.D_CODE, detail.D_NAME)
+                                            }} />
                                         <img className=" rounded-full border-[1px] border-black w-5 h-5" src={`https://www.amante.co.kr/uploads/product/color/color_${detail.D_CODE}.png`} alt="" />
                                         <label className=" text-sm hover:cursor-pointer " htmlFor={`D_${detail.D_CODE}`}>{detail.D_NAME}</label>
                                     </div>
@@ -95,7 +105,11 @@ export default () => {
                             <div className=" flex flex-col gap-4 ml-3">
                                 {(prop.DETAILED as DETAILED[]).map(detail => (
                                     <div className="flex gap-2">
-                                        <input className=" accent-teal-700 w-4 h-4" type="checkbox" name="" id={`D_${detail.D_CODE}`} />
+                                        <input className=" accent-teal-700 w-4 h-4" type="checkbox" name="" id={`D_${detail.D_CODE}`}
+                                            checked={ProductFilter.filters.some(x => x.option_id === detail.D_CODE)}
+                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                e.target.checked ? ProductFilter.setFilter(detail.D_CODE, detail.D_NAME) : ProductFilter.removeFilter(detail.D_CODE, detail.D_NAME)
+                                            }} />
                                         <label className=" text-sm hover:cursor-pointer" htmlFor={`D_${detail.D_CODE}`}>{detail.D_NAME}</label>
                                     </div>
                                 ))}
