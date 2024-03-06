@@ -12,7 +12,7 @@ const ProductItem: React.FC<{ item: ProductItem, list_mode: Boolean }> = ({ item
             <div className="flex gap-4 h-max">
                 <div className=" relative h-max w-44">
                     <Link href={`/shop/product/product_detail?PRODUCT_CODE=${item.PRODUCT_CODE}&product_cd=${item.product_cd}`}>
-                        {item.file_nm ? <img className=" rounded-md" src={`https://www.amante.co.kr/uploads/product/285/${item.file_nm}`} alt="" /> : <img src="/images/pro_in_img.jpg" alt="" loading="lazy" />}
+                        {item.file_nm ? <img className=" rounded-md" src={`https://www.amante.co.kr/uploads/product/285/${item.file_nm}`} alt="" loading="lazy" /> : <img src="/images/pro_in_img.jpg" alt="" loading="lazy" />}
                     </Link>
                     <div className="p-2 rounded-full bg-white absolute bottom-2 right-2 shadow-gray-400 shadow-md">
                         <LiaCartPlusSolid size={20} />

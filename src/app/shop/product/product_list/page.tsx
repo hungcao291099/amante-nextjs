@@ -13,6 +13,8 @@ import { Detail, FindCategory } from "@/types/api_res/Category/FindCategory"
 import Link from "next/link"
 import { FaStar } from "react-icons/fa";
 import useProductProps from "@/hooks/useProductProps"
+import { ProductCount } from "@/types/api_res/ProductList/ProductCount"
+import { formatNumber } from "@/utils/function"
 
 export default () => {
     const ProductProps = useProductProps()
@@ -29,7 +31,7 @@ export default () => {
         [1, 0, 0, 0, 0],
     ]
     const [ShowRating, setShowRating] = useState(false)
-
+    const [ProductCountApiRes, setProductCountApiRes] = useState<ProductCount>()
 
     const searchParams = useSearchParams();
     let CAT_CODE: string | null = null;
@@ -64,6 +66,10 @@ export default () => {
             navi_cate?.classList.add("hidden")
         })
     }
+    const getProductCount = (data: ProductCount) => {
+        setProductCountApiRes(data)
+        data.response && ProductProps.setPriceRangeInit(`${data.response[0].price_sale_min}|${data.response[0].price_sale_max}`)
+    }
     return (
         <div className="w-[1200px] m-auto mt-[140px] h-fit bg-slate-50 flex flex-col">
             <div className=" bg-slate-50">
@@ -91,6 +97,7 @@ export default () => {
 
                                 )
                             }
+                            {ProductCountApiRes && <li className=" font-semibold">{`총 ${formatNumber(ProductCountApiRes?.response[0].CNT)}`}</li>}
                         </ul>
 
                     </div>
@@ -102,7 +109,7 @@ export default () => {
                             <input className=" w-4 h-4 accent-teal-700" type="checkbox" name="" id="cb_sale" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { ProductProps.setSale(e.target.checked) }} /><label htmlFor="cb_sale">특가 상품만</label>
                         </div>
 
-                        <div className=" flex justify-center items-center p-1 gap-2 border-[1px] border-gray-500 rounded-md relative" onClick={() => ShowRating ? setShowRating(false) : setShowRating(true)}>
+                        <div className={`flex justify-center items-center p-1 gap-2 border-[1px] rounded-md relative ${ProductProps.point === 0 ? "border-gray-500" : "border-[#f06652]"}`} onClick={() => ShowRating ? setShowRating(false) : setShowRating(true)}>
                             <p>별점</p>
                             <IoMdArrowDropdown />
                             {ShowRating &&
@@ -145,7 +152,7 @@ export default () => {
 
             <div className=" flex justify-between mt-4">
                 <Sidebar />
-                <Content list_mode={ListMode} />
+                <Content list_mode={ListMode} onProductCountChange={getProductCount} />
             </div>
         </div>
     )

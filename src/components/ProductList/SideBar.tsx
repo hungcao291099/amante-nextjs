@@ -10,8 +10,12 @@ import { DETAILED, Response, TotalProp } from "@/types/api_res/Category/TotalPro
 import { BiCheckbox } from "react-icons/bi";
 import { useRouter } from "next/navigation";
 import useProductFilter from "@/hooks/useProductFilter";
+import useProductProps from "@/hooks/useProductProps";
+import { RangeSlider } from "next-range-slider";
+import 'next-range-slider/dist/main.css';
 export default () => {
     const ProductFilter = useProductFilter()
+    const ProductProp = useProductProps()
     const [TotalProps, setTotalProps] = useState<TotalProp>()
     const searchParams = useSearchParams();
     let CAT_CODE: string | null = null;
@@ -23,6 +27,8 @@ export default () => {
     const [CategoryList, setCategoryList] = useState<(Data[])>([])
     const [CategoryList2, setCategoryList2] = useState<(Cate_list_2[])>([])
     const [CategoryLis3t, setCategoryList3] = useState<(Cate_list_3)>()
+    const [PriceLow, setPriceLow] = useState(0)
+    const [PriceHigh, setPriceHigh] = useState(Number(ProductProp.price_range_init.split("|")[1]))
     useEffect(() => {
         const fetchData = async () => {
             setCategoryList([])
@@ -73,12 +79,13 @@ export default () => {
         fetchData();
     }, [CAT_CODE])
 
-
-
     return (
         <div className=" w-[220px] pb-20 flex flex-col gap-3">
             {ProductFilter.filters.length > 0 &&
-                <div className="rounded-md bg-white p-2 flex justify-center items-center border-[1px] border-gray-400 hover:cursor-pointer du" onClick={() => ProductFilter.removeAll()}>
+                <div className="rounded-md bg-white p-2 flex justify-center items-center border-[1px] border-gray-400 hover:cursor-pointer du" onClick={() => {
+                    ProductFilter.removeAll()
+                    ProductProp.removeAll()
+                }}>
                     <p>초기화</p>
                 </div>
             }
@@ -118,8 +125,41 @@ export default () => {
 
                     </div>
                 ) : null
+            ))}{ProductProp.price_range_init != "" &&
+                <div className="rounded-md bg-white p-2">
+                    <p className=" font-bold my-2 px-5">금액</p>
+                    <RangeSlider min={0} max={PriceHigh} step={1000}
+                        options={{
+                            leftInputProps: {
+                                value: 0,
+                                onChange: (e) => setPriceLow(Number(e.target.value))
+                            },
+                            rightInputProps: {
+                                value: PriceHigh,
+                                onChange: (e) => setPriceHigh(Number(e.target.value))
+                            },
+                            thumb: {
+                                background: "#fff",
+                                focusBackground: "#888",
+                                width: "16px",
+                                height: "16px",
+                                border: "1px solid #6b7280"
+                            },
+                            track: {
+                                background: "#d1d5db",
+                                height: "4px"
+                            },
+                            range: {
+                                background: "#c8877a"
+                            }
+                        }} />
+                    <div className=" flex justify-between">
+                        <input type="text" name="" id="" value={PriceLow} className=" outline-none border-[1px] border-gray-500 rounded-md w-16 text-center p-1" />
+                        <input type="text" name="" id="" value={PriceHigh} className=" outline-none border-[1px] border-gray-500 rounded-md w-16 text-center p-1" />
+                    </div>
+                </div>
+            }
 
-            ))}
 
         </div>
     )

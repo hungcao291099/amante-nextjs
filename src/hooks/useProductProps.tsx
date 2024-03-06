@@ -4,11 +4,16 @@ interface ProductProp {
     point: number,
     isViewCollection: boolean,
     isSale: boolean,
+    prop_string: string,
+    price_range_init: string,
+    price_range: string,
     setSort: (sort_data: number) => void,
     setPoint: (point_data: number) => void,
     setViewCollection: (view_collection: boolean) => void,
     setSale: (sale: boolean) => void
-    prop_string: string
+    setPriceRangeInit: (price_range_init: string) => void
+    setPriceRange: (price_range: string) => void
+    removeAll: () => void
 }
 const Props2String = (sort: number, point: number, isViewCollection: boolean, isSale: boolean,) => {
     var prop_string = ""
@@ -43,6 +48,8 @@ const useProductProps = create<ProductProp>((set) => ({
     sort: 0,
     point: 0,
     prop_string: "",
+    price_range_init: "",
+    price_range: "",
     isSale: false,
     isViewCollection: false,
     setSort: (sort_data) => set((state) => ({
@@ -60,6 +67,15 @@ const useProductProps = create<ProductProp>((set) => ({
     setSale: (sale) => set(state => ({
         isSale: sale,
         prop_string: Props2String(state.sort, state.point, state.isViewCollection, sale)
-    }))
+    })),
+    setPriceRangeInit: (priceRangeInit) => set({ price_range_init: priceRangeInit }),
+    setPriceRange: (priceRange) => set({ price_range: priceRange }),
+    removeAll: () => set({
+        sort: 0,
+        point: 0,
+        prop_string: "",
+        isSale: false,
+        isViewCollection: false,
+    })
 }))
 export default useProductProps
