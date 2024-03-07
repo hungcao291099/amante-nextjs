@@ -30,11 +30,14 @@ const ProductListContent: React.FC<{ list_mode: Boolean, onProductCountChange: (
             setProductLoading(true)
             try {
                 const data = await api({
-                    url: `/shop/app/filter/product_lists?CAT_CODE=${CAT_CODE}&${ProductFilter.filter_string}${ProductProp.prop_string}&page=${page}`,
+                    url: `/shop/app/filter/product_lists?CAT_CODE=${CAT_CODE}${ProductFilter.filter_string}${ProductProp.prop_string}&page=${page}${ProductProp.price_string != "" ? ProductProp.price_string : ""}`,
                     method: "GET",
                 });
-                console.log(`/shop/app/filter/product_lists?CAT_CODE=${CAT_CODE}&${ProductFilter.filter_string}${ProductProp.prop_string}&page=${page}`);
+                console.log(`/shop/app/filter/product_lists?CAT_CODE=${CAT_CODE}${ProductFilter.filter_string}${ProductProp.prop_string}&page=${page}${ProductProp.price_string != "" ? ProductProp.price_string : ""}`);
+
                 setProductList(data.data)
+                console.log();
+
             } catch (error) {
                 console.log(error);
             }
@@ -51,7 +54,7 @@ const ProductListContent: React.FC<{ list_mode: Boolean, onProductCountChange: (
             setProductLoading(false)
         };
         fetchData();
-    }, [CAT_CODE, ProductFilter.filter_string, ProductProp.prop_string, page]);
+    }, [CAT_CODE, ProductFilter.filter_string, ProductProp.prop_string, page, ProductProp.price_string]);
 
     const handleScroll = () => {
         const { scrollTop, scrollHeight, clientHeight } = document.documentElement;

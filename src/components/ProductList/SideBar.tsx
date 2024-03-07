@@ -13,6 +13,7 @@ import useProductFilter from "@/hooks/useProductFilter";
 import useProductProps from "@/hooks/useProductProps";
 import { RangeSlider } from "next-range-slider";
 import 'next-range-slider/dist/main.css';
+import { formatNumber } from "@/utils/function";
 export default () => {
     const ProductFilter = useProductFilter()
     const ProductProp = useProductProps()
@@ -29,6 +30,14 @@ export default () => {
     const [CategoryLis3t, setCategoryList3] = useState<(Cate_list_3)>()
     const [PriceLow, setPriceLow] = useState(0)
     const [PriceHigh, setPriceHigh] = useState(Number(ProductProp.price_range_init.split("|")[1]))
+    const [PercentR, setPercentR] = useState(0)
+    const [PercentL, setPercentL] = useState(0)
+    useEffect(() => {
+        if (ProductProp.price_range_init != "0|1000") {
+            setPriceLow(Number(ProductProp.price_range_init.split("|")[0]))
+            setPriceHigh(Number(ProductProp.price_range_init.split("|")[1]))
+        }
+    }, [ProductProp.price_range_init])
     useEffect(() => {
         const fetchData = async () => {
             setCategoryList([])
@@ -79,6 +88,7 @@ export default () => {
         fetchData();
     }, [CAT_CODE])
 
+
     return (
         <div className=" w-[220px] pb-20 flex flex-col gap-3">
             {ProductFilter.filters.length > 0 &&
@@ -128,19 +138,22 @@ export default () => {
             ))}{ProductProp.price_range_init != "" &&
                 <div className="rounded-md bg-white p-2">
                     <p className=" font-bold my-2 px-5">금액</p>
-                    <RangeSlider min={0} max={PriceHigh} step={1000}
+                    {/* <RangeSlider min={0} max={Number(ProductProp.price_range_init.split("|")[1])} step={1000}
+
                         options={{
                             leftInputProps: {
-                                value: 0,
-                                onChange: (e) => setPriceLow(Number(e.target.value))
+                                value: PriceLow,
+                                onChange: (e) => setPriceLow(Math.min(Number(e.target.value), PriceHigh - 1)),
+                                onMouseUp: () => ProductProp.setPriceRange(`${PriceLow}|${PriceHigh}`)
                             },
                             rightInputProps: {
                                 value: PriceHigh,
-                                onChange: (e) => setPriceHigh(Number(e.target.value))
+                                onChange: (e) => setPriceHigh(Math.max(Number(e.target.value), PriceLow + 1)),
+                                onMouseUp: () => ProductProp.setPriceRange(`${PriceLow}|${PriceHigh}`)
                             },
                             thumb: {
                                 background: "#fff",
-                                focusBackground: "#888",
+                                focusBackground: "#f1f1f1",
                                 width: "16px",
                                 height: "16px",
                                 border: "1px solid #6b7280"
@@ -152,11 +165,27 @@ export default () => {
                             range: {
                                 background: "#c8877a"
                             }
-                        }} />
-                    <div className=" flex justify-between">
-                        <input type="text" name="" id="" value={PriceLow} className=" outline-none border-[1px] border-gray-500 rounded-md w-16 text-center p-1" />
-                        <input type="text" name="" id="" value={PriceHigh} className=" outline-none border-[1px] border-gray-500 rounded-md w-16 text-center p-1" />
+                        }} /> */}
+                    <div className="range-slider px-5">
+                        <span style={{ left: `${PercentL}%`, right: `${PercentR}%` }} className="h-full absolute bg-[#c8877a]"></span>
+                        <input type="range" min={0} max={Number(ProductProp.price_range_init.split("|")[1])} step={1000} value={PriceLow} id=""
+                            onChange={(e) => {
+                                setPriceLow(Math.min(Number(e.target.value), PriceHigh - 1))
+                                setPercentL(Math.round((PriceLow / Number(ProductProp.price_range_init.split("|")[1])) * 100))
+                            }}
+                            onMouseUp={() => ProductProp.setPriceRange(`${PriceLow}|${PriceHigh}`)} />
+                        <input type="range" min={0} max={Number(ProductProp.price_range_init.split("|")[1])} step={1000} value={PriceHigh} id=""
+                            onChange={(e) => {
+                                setPriceHigh(Math.max(Number(e.target.value), PriceLow + 1))
+                                setPercentR(Math.round(100 - (PriceHigh / Number(ProductProp.price_range_init.split("|")[1])) * 100))
+                            }}
+                            onMouseUp={() => ProductProp.setPriceRange(`${PriceLow}|${PriceHigh}`)} />
                     </div>
+                    <div className=" flex justify-between">
+                        <input type="text" name="" id="" value={formatNumber(PriceLow)} className=" outline-none border-[1px] border-gray-500 rounded-md w-16 text-center p-1" />
+                        <input type="text" name="" id="" value={formatNumber(PriceHigh)} className=" outline-none border-[1px] border-gray-500 rounded-md w-16 text-center p-1" />
+                    </div>
+
                 </div>
             }
 

@@ -7,6 +7,7 @@ interface ProductProp {
     prop_string: string,
     price_range_init: string,
     price_range: string,
+    price_string: string,
     setSort: (sort_data: number) => void,
     setPoint: (point_data: number) => void,
     setViewCollection: (view_collection: boolean) => void,
@@ -48,8 +49,9 @@ const useProductProps = create<ProductProp>((set) => ({
     sort: 0,
     point: 0,
     prop_string: "",
-    price_range_init: "",
+    price_range_init: "0|1000",
     price_range: "",
+    price_string: "",
     isSale: false,
     isViewCollection: false,
     setSort: (sort_data) => set((state) => ({
@@ -69,7 +71,10 @@ const useProductProps = create<ProductProp>((set) => ({
         prop_string: Props2String(state.sort, state.point, state.isViewCollection, sale)
     })),
     setPriceRangeInit: (priceRangeInit) => set({ price_range_init: priceRangeInit }),
-    setPriceRange: (priceRange) => set({ price_range: priceRange }),
+    setPriceRange: (priceRange) => set({
+        price_range: priceRange,
+        price_string: `&price_min=${priceRange.split("|")[0]}&price_max=${priceRange.split("|")[1]}`
+    }),
     removeAll: () => set({
         sort: 0,
         point: 0,

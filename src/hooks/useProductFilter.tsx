@@ -28,7 +28,7 @@ const Filter2String = (filters: Option[]) => {
 
     Object.keys(OptionsGroup).forEach((group_id, index) => {
         const options = OptionsGroup[group_id].map(option => option.option_id).join('^');
-        filter_string += `prop[${group_id}]=${options}`;
+        filter_string += `&prop[${group_id}]=${options}`;
         if (index < Object.keys(OptionsGroup).length - 1) {
             filter_string += '&';
         }
