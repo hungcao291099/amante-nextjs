@@ -28,6 +28,7 @@ const ProductListContent: React.FC<{ list_mode: Boolean, onProductCountChange: (
         if (ProductLoading || reachedEnd) return;
         const fetchData = async () => {
             setProductLoading(true)
+            setPage(1)
             try {
                 const data = await api({
                     url: `/shop/app/filter/product_lists?CAT_CODE=${CAT_CODE}${ProductFilter.filter_string}${ProductProp.prop_string}&page=${page}${ProductProp.price_string != "" ? ProductProp.price_string : ""}`,

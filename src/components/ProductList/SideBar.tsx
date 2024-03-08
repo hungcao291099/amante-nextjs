@@ -36,6 +36,8 @@ export default () => {
         if (ProductProp.price_range_init != "0|1000") {
             setPriceLow(Number(ProductProp.price_range_init.split("|")[0]))
             setPriceHigh(Number(ProductProp.price_range_init.split("|")[1]))
+            setPercentL(Math.round((Number(ProductProp.price_range_init.split("|")[0]) / Number(ProductProp.price_range_init.split("|")[1])) * 100))
+            setPercentR(0)
         }
     }, [ProductProp.price_range_init])
     useEffect(() => {

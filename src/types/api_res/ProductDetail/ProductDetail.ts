@@ -58,9 +58,9 @@ export interface Data {
     file: File[];
     relationList: unknown[];
     optionBases: OptionBases[];
-    OPTION_C: OPTION_C[];
-    OPTION_S: unknown[];
-    OPTION_I: unknown[];
+    OPTION_C: OPTION_MODEL[];
+    OPTION_S: OPTION_MODEL[];
+    OPTION_I: OPTION_MODEL[];
     useReview: UseReview[];
     qna: unknown[];
     recommend: Recommend[];
@@ -132,7 +132,7 @@ export interface OptionBases {
     opt_od: number;
 }
 
-export interface OPTION_C {
+export interface OPTION_MODEL {
     opt_cd2: string;
     opt_nm2: string;
     opt_cd1: string;
@@ -164,16 +164,16 @@ export interface UseReview {
     review_gb: string;
     point: number;
     file_nm1: null | string;
-    file_nm2: null;
-    file_nm3: null;
-    file_nm4: null;
-    file_nm5: null;
-    photo_review_url: string | null;
-    photo_review_url2: null;
-    photo_review_url3: null;
-    photo_review_url4: string;
-    photo_review_url5: null;
-    photo_review_url6: null;
+    file_nm2: null | string;
+    file_nm3: null | string;
+    file_nm4: null | string;
+    file_nm5: null | string;
+    photo_review_url: null | string;
+    photo_review_url2: null | string;
+    photo_review_url3: null | string;
+    photo_review_url4: null | string;
+    photo_review_url5: null | string;
+    photo_review_url6: null | string;
     reserved_yn: string;
     comment_cnt: number;
     like_cnt: number;
