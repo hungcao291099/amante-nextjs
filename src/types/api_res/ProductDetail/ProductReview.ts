@@ -10,8 +10,8 @@ export interface ProductReview {
     content: string;
     point: number;
     file_nm1: string | null;
-    file_nm2: string | null;
-    file_nm3: null;
+    file_nm2: null | string;
+    file_nm3: null | string;
     file_nm4: null;
     file_nm5: null;
     hp: string | null;
@@ -32,7 +32,7 @@ export interface ProductReview {
     member_grp_cd: null;
     order_no: null;
     hate_cnt: null;
-    photo_review_url: null;
+    photo_review_url: null | string;
     photo_review_url2: null;
     photo_review_url3: null;
     photo_review_url4: string;
@@ -46,5 +46,17 @@ export interface ProductReview {
     point_avg: number;
     comment_cnt: number;
     like_yn: number;
+    comment: Comment[];
+}
+
+export interface Comment {
+    comment_seq: number;
+    use_review_seq: number;
+    cust_seq: null;
+    user_id: string;
+    user_nm: string;
+    comment: string;
+    use_yn: string;
+    reg_date: string;
 }
 

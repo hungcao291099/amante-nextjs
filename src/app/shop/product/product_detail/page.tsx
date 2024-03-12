@@ -1,22 +1,26 @@
 'use client'
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 import { GoGift, GoHome } from "react-icons/go";
 import { IoMdArrowDropright } from "react-icons/io";
 import { Detail, FindCategory } from "@/types/api_res/Category/FindCategory"
 import Link from "next/link"
 import api from "@/utils/instants";
 import { Navi, PRODUCT_CODE_API_GET } from "@/types/api_res/ProductDetail/ProductCodeInfo";
-import { PRODUCT_DETAIL_API_RES, UseReview } from "@/types/api_res/ProductDetail/ProductDetail";
+import { OptionBases, PRODUCT_DETAIL_API_RES, UseReview } from "@/types/api_res/ProductDetail/ProductDetail";
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FaStar, FaBell } from "react-icons/fa";
 import { formatNumber } from "@/utils/function";
 import { CiCircleInfo } from "react-icons/ci";
-import { MdOutlineArrowDropDown, MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp } from "react-icons/md";
+import { MdOutlineArrowDropDown, MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight, MdOutlineKeyboardArrowUp } from "react-icons/md";
 import parse from 'html-react-parser';
 import { ProductReview } from "@/types/api_res/ProductDetail/ProductReview";
-
+import useImageList from "@/hooks/useImageListString"
+import { ProductQna } from "@/types/api_res/ProductDetail/ProductQna";
+import { ReviewAllImage } from "@/types/api_res/ProductDetail/ReviewAllImage";
+import { ProductOption } from "@/types/api_res/ProductDetail/ProductOption";
+import useProgressBar from "@/hooks/useProgressBar"
 export default () => {
     const searchParams = useSearchParams();
     let PRODUCT_CODE: string | null = null;
@@ -25,7 +29,8 @@ export default () => {
         PRODUCT_CODE = searchParams.get('PRODUCT_CODE');
         product_cd = searchParams.get('product_cd');
     }
-
+    const ImageListString = useImageList()
+    const ProgressBar = useProgressBar()
     const [ProductCodeRes, setProductCodeRes] = useState<PRODUCT_CODE_API_GET>()
     const [ProductDetailRes, setProductDetailRes] = useState<PRODUCT_DETAIL_API_RES>()
     const [CurrentImage, setCurrentImage] = useState("")
@@ -33,7 +38,18 @@ export default () => {
     const [DetailTab, setDetailTab] = useState(1)
     const [DetailShow, setDetailShow] = useState(false)
     const [ProductReview, setProductReview] = useState<ProductReview[]>([])
+    const [PageList, setPageList] = useState<number[]>([])
+    const [CurrentReviewPage, setCurrentReviewPage] = useState(1)
+    const [NavReviewPage, setNavReviewPage] = useState(1)
+    const [ProductQna, setProductQna] = useState<ProductQna>()
+    const [QnaPageList, setQnaPageList] = useState<number[]>([])
+    const [CurrentQnaPage, setCurrentQnaPage] = useState(1)
+    const [NavQnaPage, setNavQnaPage] = useState(1)
+    const [AllReviewImage, setAllReviewImage] = useState<string[]>([])
+    const [OptIActive, setOptIActive] = useState(false)
+    const [optionMain, setoptionMain] = useState<OptionBases[]>([])
     useEffect(() => {
+        ProgressBar.setMax(10)
         const fetchData = async () => {
             try {
                 const data = await api({
@@ -45,28 +61,31 @@ export default () => {
             } catch (error) {
                 console.log(error);
             }
-
+            ProgressBar.setLoaded()
 
             try {
                 const data = await api({
-                    url: `/shop/product/review/list?product_cd=${product_cd}`,
+                    url: `/shop/product/review_image?product_cd=${product_cd}`,
                     method: "GET",
                 });
-                setProductReview(data.data);
+                var all_img_res: ReviewAllImage = data.data
+                setAllReviewImage([])
+                all_img_res.data.image_list1.map(x => setAllReviewImage(y => [...y, `https://www.amante.co.kr/uploads/review/${x}`]))
+                all_img_res.data.image_list2.map(x => setAllReviewImage(y => [...y, x]))
 
             } catch (error) {
                 console.log(error);
             }
-
+            ProgressBar.setLoaded()
 
             try {
                 const data = await api({
                     url: `/shop/product/detail_new?product_cd=${product_cd}`,
                     method: "GET",
                 });
-                setProductDetailRes(data.data);
-                setCurrentImage((data.data as PRODUCT_DETAIL_API_RES).data.file[0].file_nm)
                 var datares: PRODUCT_DETAIL_API_RES = data.data
+                setProductDetailRes(datares);
+                setCurrentImage(datares.data.file[0].file_nm)
                 var point = Math.round(datares.data.point)
                 setRating([])
                 for (let i = 0; i < point; i++) {
@@ -78,30 +97,59 @@ export default () => {
                     }
 
                 }
+                setPageList([])
+                for (let i = 1; i <= Math.ceil(datares.data.review_cnt / 5); i++) {
+                    setPageList(x => [...x, i])
 
+                }
+                setoptionMain(datares.data.optionBases.filter(x => x.opt_gb != "I"))
             } catch (error) {
                 console.log(error);
             }
+            ProgressBar.setLoaded()
         };
         fetchData();
     }, []);
-
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const data = await api({
-                    url: `/member/mypage/review/getComment?use_review_seq=`,
+                    url: `/shop/product/review/list_new?product_cd=${product_cd}&page=${CurrentReviewPage}`,
                     method: "GET",
                 });
-                setProductReview(data.data);
+                setProductReview(data.data)
 
             } catch (error) {
                 console.log(error);
             }
+            ProgressBar.setLoaded()
         }
         fetchData();
-    }, [])
-
+    }, [CurrentReviewPage])
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await api({
+                    url: `/shop/qna/list_new?product_cd=${product_cd}&page=${CurrentQnaPage}`,
+                    method: "GET",
+                });
+                setProductQna(data.data)
+                var qna_data: ProductQna = data.data
+                setQnaPageList([])
+                for (let i = 1; i <= qna_data.total_page; i++) {
+                    setQnaPageList(x => [...x, i])
+                }
+            } catch (error) {
+                console.log(error);
+            }
+            ProgressBar.setLoaded()
+        }
+        fetchData();
+    }, [CurrentQnaPage])
+    const showComment = (rv_seq: number) => {
+        var comment = document.getElementById(`rv_${rv_seq}`)
+        comment?.classList.contains('hidden') ? comment?.classList.remove('hidden') : comment?.classList.add('hidden')
+    }
 
     const showNaviCate = (cat_code: number) => {
         var navi_cate_li = document.getElementById(`cate_navi_li_${cat_code}`)
@@ -113,6 +161,54 @@ export default () => {
             navi_cate?.classList.add("hidden")
         })
     }
+    const getOptIndex = (select_opt_cd2: string, index: number) => {
+        setOptIActive(false)
+        select_opt_cd2 && index >= optionMain.length ? setOptIActive(true) : setOptIActive(false)
+
+        const fetchData = async () => {
+            try {
+                const data = await api({
+                    url: `/shop/product/product_option`,
+                    method: "POST",
+                    data: {
+                        index,
+                        product_cd: ProductDetailRes?.data.product_cd,
+                        select_opt_cd2,
+                        siblings_opt_cd1: "",
+                        pre_opt_cd2: ""
+                    }
+                });
+                var opt_res: ProductOption[] = data.data
+                var opt_list = document.getElementById(`OPT_${opt_res[0].opt_gb}_${index + 1}`) as HTMLSelectElement
+                for (var i = opt_list.options.length - 1; i > 0; i--) {
+                    opt_list.remove(i);
+                }
+                opt_res.map(option => {
+                    var newOption = document.createElement("option")
+                    newOption.value = option.opt_cd2
+                    newOption.text = option.opt_nm2
+                    newOption.disabled = option.stock === 0
+                    newOption.onclick
+                    opt_list?.appendChild(newOption)
+                })
+
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        select_opt_cd2 && fetchData();
+    }
+
+    const OptionISelect = (e: ChangeEvent, index: number) => {
+        var OptionI = document.getElementById(`OPT_I_${index}`) as HTMLSelectElement
+        if (!OptIActive) {
+            alert("Select mandatory option first ~")
+            OptionI.value = OptionI.options[0].value
+        }
+
+    }
+    console.log(`${ProgressBar.loaded} /  ${ProgressBar.max}`);
+
     return (
 
         <div className=" w-[1200px] m-auto mt-[140px] rounded-md mb-3 p-3 h-fit bg-white flex flex-col gap-4">
@@ -179,19 +275,12 @@ export default () => {
                             <p className=" text-gray-400">배송비</p>
                             <p className=" text-black">3,500원 (70,000원 이상 구매시 무료배송)</p>
                         </div>
-                        {ProductDetailRes.data.optionBases.map(opt => opt.opt_gb === "C" && (
-                            <select className=" p-1 border-[1px] border-gray-400 rounded-md" name="" id="">
-                                <option value={`${opt.opt_cd1}`}>{opt.opt_nm1}</option>
+                        {optionMain.map((opt, index) => opt.opt_gb === "C" && (
+                            <select onChange={(e) => getOptIndex(e.target.value, index + 1)} className=" p-1 border-[1px] border-gray-400 rounded-md" name="" id={`OPT_${opt.opt_gb}_${index + 1}`}>
+                                <option value="">{opt.opt_nm1}</option>
+
                                 {ProductDetailRes.data.OPTION_C.map(optC => optC.opt_cd1 === opt.opt_cd1 && (
-                                    <option value={`${optC.opt_cd2}`}>{`${optC.opt_nm2} ${optC.opt_price != 0 ? `(+${formatNumber(optC.opt_price)}원)` : ""}`}</option>
-                                ))}
-                            </select>
-                        ))}
-                        {ProductDetailRes.data.optionBases.map(opt => opt.opt_gb === "S" && (
-                            <select className=" p-1 border-[1px] border-gray-400 rounded-md" name="" id="">
-                                <option value={`${opt.opt_cd1}`}>{opt.opt_nm1}</option>
-                                {ProductDetailRes.data.OPTION_S.map(optS => optS.opt_cd1 === opt.opt_cd1 && (
-                                    <option value={`${optS.opt_cd2}`}>{`${optS.opt_nm2} ${optS.opt_price != 0 ? `(+${formatNumber(optS.opt_price)}원)` : ""}`}</option>
+                                    <option value={`${optC.opt_cd2}`} >{`${optC.opt_nm2} ${optC.opt_price != 0 ? `(+${formatNumber(optC.opt_price)}원)` : ""}`}</option>
                                 ))}
                             </select>
                         ))}
@@ -200,9 +289,9 @@ export default () => {
                             <FaBell color="#F6BC25" />
                             <a className=" text-[#3AA1FF] text-sm" href="#">재입고 알리미 신청</a>
                         </div>
-                        <p className=" text-gray-400">추가 구성</p>
-                        {ProductDetailRes.data.optionBases.map(opt => opt.opt_gb === "I" && (
-                            <select className=" p-1 border-[1px] border-gray-400 rounded-md" name="" id="">
+                        <p className={`${OptIActive ? " text-slate-600 font-semibold" : "text-gray-400"}`}>추가 구성</p>
+                        {ProductDetailRes.data.optionBases.map((opt, index) => opt.opt_gb === "I" && (
+                            <select onChange={(e) => OptionISelect(e, index)} className=" p-1 border-[1px] border-gray-400 rounded-md" name="" id={`OPT_I_${index}`}>
                                 <option value={`${opt.opt_cd1}`}>{opt.opt_nm1}</option>
                                 {ProductDetailRes.data.OPTION_I.map(optI => optI.opt_cd1 === opt.opt_cd1 && (
                                     <option value={`${optI.opt_cd2}`}>{`${optI.opt_nm2} ${optI.opt_price != 0 ? `(+${formatNumber(optI.opt_price)}원)` : ""}`}</option>
@@ -251,9 +340,9 @@ export default () => {
                     {/* ------------------DETAIL TAB -------------- */}
                     {DetailTab === 1 &&
                         <div className={`${DetailShow ? " h-fit" : " h-[1000px] overflow-hidden"}  relative flex flex-col items-center`}>
-                            {parse(ProductDetailRes?.data.productDetail.content ? ProductDetailRes?.data.productDetail.content.replace(/&lt;/g, '<').replace(/&gt;/g, '>') : "")}
+                            {parse(ProductDetailRes?.data.productDetail.content ? ProductDetailRes?.data.productDetail.content.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace('margin: 0 auto;', 'margin: 0;') : "")}
                             <div className=" flex flex-col absolute bottom-0 w-full">
-                                <div className=" h-[1000px] bg-gradient-to-t from-white"></div>
+                                {!DetailShow && <div className=" h-[1000px] bg-gradient-to-t from-white"></div>}
                                 <div className=" bg-white bottom-0 flex gap-3 justify-center items-center p-2 text-lg font-semibold border-[1px] border-gray-700 rounded hover:cursor-pointer"
                                     onClick={() => DetailShow ? setDetailShow(false) : setDetailShow(true)}>
                                     <p>상품 설명 더보기</p>
@@ -273,49 +362,111 @@ export default () => {
                         <div className=" py-5 flex flex-col gap-5">
                             <p className=" text-xl font-semibold">리뷰 <span className=" text-[#f06652]">{formatNumber(ProductDetailRes?.data.review_cnt ? ProductDetailRes?.data.review_cnt : 0)}</span></p>
                             <div className=" grid grid-cols-6 gap-2 p-2">
-                                {getReviewImageList(ProductDetailRes?.data.useReview).map((image, index) => (
+                                {AllReviewImage.map((image, index) => (
                                     index < 6 &&
-                                    <div className=" w-full rounded-md relative aspect-square">
-                                        <img className="rounded-md w-full h-full" src={image} alt="" />
-                                        {index === 5 && ProductDetailRes?.data.useReview.length &&
-                                            <div className=" w-full h-full absolute rounded-md backdrop-brightness-50 top-0 left-0 flex justify-center items-center text-white text-2xl font-semibold">{`+${getReviewImageList(ProductDetailRes?.data.useReview).length - 6}`}</div>
+                                    <div className=" w-full rounded-md relative aspect-square" onClick={() => ImageListString.onAddData(AllReviewImage)}>
+                                        <img className="rounded-md w-full h-full select-none" src={image} alt="" />
+                                        {index === 5 && AllReviewImage.length > 0 &&
+                                            <div className=" w-full h-full absolute rounded-md backdrop-brightness-50 top-0 left-0 flex justify-center items-center text-white text-2xl font-semibold">{`+${AllReviewImage.length - 6}`}</div>
                                         }
                                     </div>
                                 ))}
                             </div>
                             <div className=" flex flex-col gap-10">
                                 {ProductReview.map(rv => (
-                                    <div className=" flex flex-col gap-2">
-                                        <div className=" flex gap-3 items-center">
-                                            <div className=" flex gap-1">
-                                                {getReviewRating(rv.point).map(rating => rating === 1 ? <FaStar color="#f06652" /> : <FaStar color="#727476" />)}
+                                    <div className=" flex flex-col gap-1">
+                                        <div className=" flex justify-between items-center w-full gap-5">
+                                            <div className=" flex flex-col justify-between gap-2 ">
+                                                <div className=" flex gap-3 items-center w-fit">
+                                                    <div className=" flex gap-1">
+                                                        {getReviewRating(rv.point).map(rating => rating === 1 ? <FaStar color="#f06652" /> : <FaStar color="#727476" />)}
+                                                    </div>
+                                                    <div className=" text-gray-400 text-sm">{rv.user_id.slice(0, 3) + '***'}</div>
+                                                    <div className=" text-gray-400 text-sm">{rv.reg_date.split(" ")[0]}</div>
+                                                </div>
+                                                <h3 className=" font-bold text-lg">{rv.title}</h3>
+                                                <p className=" text-sm text-gray-600 w-fit">{rv.content}</p>
                                             </div>
-                                            <div className=" text-gray-400 text-sm">{rv.user_id.slice(0, 3) + '***'}</div>
-                                            <div className=" text-gray-400 text-sm">{rv.reg_date.split(" ")[0]}</div>
+                                            <div className=" relative w-24 flex-shrink-0" onClick={() => ImageListString.onAddData(getReviewDetailImageList(rv))}>
+                                                <img className=" rounded aspect-square" src={getReviewDetailImageList(rv)[0]} alt="" />
+                                                {getReviewDetailImageList(rv).length > 1 && <div className=" w-full h-full absolute rounded-md backdrop-brightness-50 top-0 left-0 flex justify-center items-center text-white text-2xl font-semibold">{`+${getReviewDetailImageList(rv).length - 1}`}</div>}
+                                            </div>
                                         </div>
-                                        <h3 className=" font-bold text-lg">{rv.title}</h3>
-                                        <p className=" text-sm text-gray-600">{rv.content}</p>
-                                        <div className=" flex items-center gap-2 text-[#c8877a]">
+                                        <div className=" flex items-center gap-2 text-[#c8877a] p-2 hover:bg-gray-100 hover:cursor-pointer rounded-sm w-fit " onClick={() => showComment(rv.use_review_seq)}>
                                             <p>접기</p>
                                             <MdOutlineKeyboardArrowUp color="#c8877a" size={15} />
                                         </div>
                                         <div className=" flex gap-3 items-center">
                                             <p className={`text-sm p-1 border-[1px] ${rv.like_yn !== 0 ? "text-[#f06652] border-[#f06652]" : "border-gray-400 text-gray-400"}`}>추천해요</p>
-                                            <p className="text-sm text-gray-400 p-1 font-semibold">{`댓글(${rv.like_cnt})`}</p>
+                                            <p className="text-sm text-gray-400 p-1 font-semibold">{`댓글(${rv.comment_cnt})`}</p>
                                         </div>
-                                        <div className=" flex flex-col gap-2">
-                                            <div className=" w-full rounded-md bg-gray-100 text-gray-600 flex flex-col gap-1 p-2">
-                                                <p></p>
+                                        <div className=" flex flex-col gap-2 hidden" id={`rv_${rv.use_review_seq}`}>
+                                            <div className=" flex flex-col gap-2 p-2">
+                                                {rv.comment.map(cmt => (
+                                                    <div className=" w-full rounded-md bg-gray-100 text-gray-600 flex flex-col gap-2 p-2">
+                                                        <p className=" text-sm">{cmt.comment}</p>
+                                                        <p className=" text-gray-400">{`${cmt.user_id} • ${cmt.reg_date.split(" ")[0]}`}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <div className=" flex gap-2 w-full">
+                                                <input className="p-1 text-sm border-[1px] rounded-sm border-gray-400 flex-grow" type="text" name="" id="" />
+                                                <p className=" bg-slate-800 py-2 px-4 text-white">등록</p>
                                             </div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
+                            <div className=" flex justify-center items-center gap-5 text-lg">
+                                <MdOutlineKeyboardArrowLeft className=" hover:cursor-pointer" color={NavReviewPage > 1 ? "#111" : "#999"} size={25} onClick={() => NavReviewPage > 1 && setNavReviewPage(x => x - 1)} />
+                                <div className=" flex gap-5 text-gray-400">
+                                    {NavReviewPage > 1 && <p className="hover:text-[#c8877a] hover:cursor-pointer">1</p>}
+                                    {NavReviewPage > 1 && <p>. . . </p>}
+                                    {PageList.map(page => page <= 5 * NavReviewPage && page > 5 * NavReviewPage - 5 &&
+                                        <p className={`${CurrentReviewPage === page && "text-gray-900 font-bold"} hover:text-[#c8877a] hover:cursor-pointer`}
+                                            onClick={() => setCurrentReviewPage(page)}>{page}</p>
+                                    )}
+                                    {NavReviewPage <= Math.floor(PageList[PageList.length - 1] / 5) && <p>. . .</p>}
+                                    {NavReviewPage <= Math.floor(PageList[PageList.length - 1] / 5) && <p className="hover:text-[#c8877a] hover:cursor-pointer" onClick={() => {
+                                        setCurrentReviewPage(PageList[PageList.length - 1])
+                                        setNavReviewPage(Math.ceil(PageList[PageList.length - 1] / 5))
+                                    }}>{PageList[PageList.length - 1]} </p>}
+                                </div>
+
+                                <MdOutlineKeyboardArrowRight className=" hover:cursor-pointer" color={NavReviewPage <= Math.floor(PageList[PageList.length - 1] / 5) ? "#111" : "#999"} size={25} onClick={() => NavReviewPage <= Math.floor(PageList[PageList.length - 1] / 5) && setNavReviewPage(x => x + 1)} />
+                            </div>
                         </div>
                     }
                     {/* ------------------QNA TAB -------------- */}
-                    {DetailTab === 4 &&
-                        <div></div>
+                    {DetailTab === 4 && ProductQna?.data && ProductQna?.data.length > 0 &&
+                        <div className=" flex flex-col gap-5 p-5">
+                            <h1 className=" font-bold text-black text-lg">문의 <span className=" text-[#f06652]">{ProductQna.total_count}</span></h1>
+                            <div className=" flex flex-col gap-5">
+                                {ProductQna.data.map(quest => (
+                                    <div className=" flex justify-between items-center p-2">
+                                        <div className=" flex flex-col gap-2">
+                                            <h3 className=" text-sm text-gray-400">{`${quest.writer_id} • ${quest.reg_date.split(" ")[0]}`}</h3>
+                                            <p className=" text-gray-600">{quest.title}</p>
+                                        </div>
+                                        <h2 className={`${quest.reply_date !== "" ? "text-[#f06652]" : "text-gray-400"} p-2 rounded-sm hover:bg-gray-100 hover:cursor-pointer flex-shrink-0`}>{quest.reply_date !== "" ? "답변 완료" : "답변 대기"}</h2>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className=" flex gap-5 justify-center items-center">
+                                <MdOutlineKeyboardArrowLeft className=" hover:cursor-pointer" color={NavQnaPage > 1 ? "#111" : "#999"} size={25} onClick={() => NavQnaPage > 1 && setNavReviewPage(x => x - 1)} />
+                                <div className=" flex gap-5">
+                                    {QnaPageList.map(page => page <= 5 * NavQnaPage && page > 5 * NavQnaPage - 5 &&
+                                        <p className={`${CurrentQnaPage === page && "text-gray-900 font-bold"} hover:text-[#c8877a] hover:cursor-pointer`}
+                                            onClick={() => setCurrentQnaPage(page)}>{page}</p>)}
+                                    {NavQnaPage <= ProductQna.total_page && ProductQna.total_page > 5 && <p>. . .</p>}
+                                    {NavQnaPage <= ProductQna.total_page && ProductQna.total_page > 5 && <p className="hover:text-[#c8877a] hover:cursor-pointer" onClick={() => {
+                                        setCurrentQnaPage(ProductQna.total_page)
+                                        setNavQnaPage(ProductQna.total_page)
+                                    }}>{ProductQna.total_page} </p>}
+                                </div>
+                                <MdOutlineKeyboardArrowRight className=" hover:cursor-pointer" color={NavQnaPage <= ProductQna.total_page && ProductQna.total_page > 5 ? "#111" : "#999"} size={25} onClick={() => NavQnaPage <= ProductQna.total_page && ProductQna.total_page > 5 && setNavQnaPage(x => x + 1)} />
+                            </div>
+                        </div>
                     }
                 </div>
             </div>
@@ -339,6 +490,22 @@ const getReviewImageList = (useReview: UseReview[] | undefined | null) => {
         if (review.photo_review_url6) imageList.push(`${review.photo_review_url5}`)
     })
 
+    return imageList
+}
+const getReviewDetailImageList = (useReview: ProductReview) => {
+    var imageList: string[] = []
+    if (useReview.file_nm1) imageList.push(`https://www.amante.co.kr/uploads/review/${useReview.file_nm1}`)
+    if (useReview.file_nm2) imageList.push(`https://www.amante.co.kr/uploads/review/${useReview.file_nm2}`)
+    if (useReview.file_nm3) imageList.push(`https://www.amante.co.kr/uploads/review/${useReview.file_nm3}`)
+    if (useReview.file_nm4) imageList.push(`https://www.amante.co.kr/uploads/review/${useReview.file_nm4}`)
+    if (useReview.file_nm5) imageList.push(`https://www.amante.co.kr/uploads/review/${useReview.file_nm5}`)
+
+    if (useReview.photo_review_url) imageList.push(`${useReview.photo_review_url}`)
+    if (useReview.photo_review_url2) imageList.push(`${useReview.photo_review_url2}`)
+    if (useReview.photo_review_url3) imageList.push(`${useReview.photo_review_url3}`)
+    if (useReview.photo_review_url4) imageList.push(`${useReview.photo_review_url4}`)
+    if (useReview.photo_review_url5) imageList.push(`${useReview.photo_review_url5}`)
+    if (useReview.photo_review_url6) imageList.push(`${useReview.photo_review_url5}`)
     return imageList
 }
 const getReviewRating = (point: number) => {
