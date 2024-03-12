@@ -21,6 +21,7 @@ import { ProductQna } from "@/types/api_res/ProductDetail/ProductQna";
 import { ReviewAllImage } from "@/types/api_res/ProductDetail/ReviewAllImage";
 import { ProductOption } from "@/types/api_res/ProductDetail/ProductOption";
 import useProgressBar from "@/hooks/useProgressBar"
+import Loading from "@/components/ProductDetail/Loading";
 export default () => {
     const searchParams = useSearchParams();
     let PRODUCT_CODE: string | null = null;
@@ -207,271 +208,274 @@ export default () => {
         }
 
     }
-    console.log(`${ProgressBar.loaded} /  ${ProgressBar.max}`);
+    if (ProgressBar.max != 0)
+        return (
+            <Loading />
+        )
+    else
+        return (
 
-    return (
+            <div className=" w-[1200px] m-auto mt-[140px] rounded-md mb-3 p-3 h-fit bg-white flex flex-col gap-4">
+                <div className=" flex item-center justify-between">
+                    <div className=" flex items-center gap-8">
+                        <Link href={"/"}><GoHome size={20} /></Link>
 
-        <div className=" w-[1200px] m-auto mt-[140px] rounded-md mb-3 p-3 h-fit bg-white flex flex-col gap-4">
-            <div className=" flex item-center justify-between">
-                <div className=" flex items-center gap-8">
-                    <Link href={"/"}><GoHome size={20} /></Link>
+                        <ul className=" text-sm flex gap-4">
+                            {
+                                ProductCodeRes?.success && ProductCodeRes.data.Navi.map(cate =>
+                                    <Link href={`/shop/product/product_list?CAT_CODE=${cate.CAT_CODE}`}>
+                                        <li id={`cate_navi_li_${cate.CAT_CODE}`} className=" flex items-center gap-1 relative z-0" onMouseEnter={() => showNaviCate(cate.CAT_CODE)}>
+                                            <IoMdArrowDropright />
+                                            <p>{cate.CAT_NAME}</p>
+                                            <div id={`cate_navi_${cate.CAT_CODE}`} className=" absolute top-0 left-0 hidden">
+                                                <ul className="rounded-md border-gray-300 bg-white border-[1px] h-fit w-max">
+                                                    {(cate.detail as Detail[]).map(cate2 => (
+                                                        <Link href={`/shop/product/product_list?CAT_CODE=${cate.CAT_CODE}`}>
+                                                            <li className="p-2 text-gray-700 hover:text-rose-400 ">{cate2.CAT_NAME}</li>
+                                                        </Link>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        </li>
+                                    </Link>
 
-                    <ul className=" text-sm flex gap-4">
-                        {
-                            ProductCodeRes?.success && ProductCodeRes.data.Navi.map(cate =>
-                                <Link href={`/shop/product/product_list?CAT_CODE=${cate.CAT_CODE}`}>
-                                    <li id={`cate_navi_li_${cate.CAT_CODE}`} className=" flex items-center gap-1 relative z-0" onMouseEnter={() => showNaviCate(cate.CAT_CODE)}>
-                                        <IoMdArrowDropright />
-                                        <p>{cate.CAT_NAME}</p>
-                                        <div id={`cate_navi_${cate.CAT_CODE}`} className=" absolute top-0 left-0 hidden">
-                                            <ul className="rounded-md border-gray-300 bg-white border-[1px] h-fit w-max">
-                                                {(cate.detail as Detail[]).map(cate2 => (
-                                                    <Link href={`/shop/product/product_list?CAT_CODE=${cate.CAT_CODE}`}>
-                                                        <li className="p-2 text-gray-700 hover:text-rose-400 ">{cate2.CAT_NAME}</li>
-                                                    </Link>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    </li>
-                                </Link>
+                                )
+                            }
+                        </ul>
 
-                            )
-                        }
-                    </ul>
-
-                </div>
-            </div>
-            {ProductDetailRes?.success &&
-                <div className=" flex justify-around">
-                    <div className=" w-[500px] flex flex-col gap-1">
-                        {CurrentImage != "" && <img className=" duration-300 rounded" src={`https://www.amante.co.kr/uploads/product/${CurrentImage}`} alt="" loading="lazy" />}
-                        <div className="w-full grid grid-cols-6 gap-1">
-                            {ProductDetailRes.data.file.map(file =>
-                                <img className={`hover:border-[#c8877a] border-[2px] duration-300 ${file.file_nm === CurrentImage ? "border-[#c8877a]" : ""}`} src={`https://www.amante.co.kr/uploads/product/${file.file_nm}`} alt="" onMouseEnter={() => setCurrentImage(file.file_nm)} />
-                            )}
-
-                        </div>
                     </div>
-                    <div className=" w-[500px] flex flex-col gap-3">
-                        <div className=" flex gap-1">tag</div>
-                        <div className=" text-xl font-semibold">{ProductDetailRes.data.product_nm}</div>
-                        <div className=" flex gap-2">
-                            <div className="flex gap-1">{rating.map(star => star === 1 ? <FaStar color="#f06652" /> : <FaStar color="#727476" />)}</div>
-                            {/* <div className="flex gap-1">{rating.map(star => star)}</div> */}
-                            <div className=" text-sm text-[#f06652]">{`${formatNumber(ProductDetailRes.data.review_cnt)}개 리뷰`}</div>
+                </div>
+                {ProductDetailRes?.success &&
+                    <div className=" flex justify-around">
+                        <div className=" w-[500px] flex flex-col gap-1">
+                            {CurrentImage != "" && <img className=" duration-300 rounded" src={`https://www.amante.co.kr/uploads/product/${CurrentImage}`} alt="" loading="lazy" />}
+                            <div className="w-full grid grid-cols-6 gap-1">
+                                {ProductDetailRes.data.file.map(file =>
+                                    <img className={`hover:border-[#c8877a] border-[2px] duration-300 ${file.file_nm === CurrentImage ? "border-[#c8877a]" : ""}`} src={`https://www.amante.co.kr/uploads/product/${file.file_nm}`} alt="" onMouseEnter={() => setCurrentImage(file.file_nm)} />
+                                )}
+
+                            </div>
                         </div>
-                        {ProductDetailRes.data.fee_rate !== 0 &&
+                        <div className=" w-[500px] flex flex-col gap-3">
+                            <div className=" flex gap-1">tag</div>
+                            <div className=" text-xl font-semibold">{ProductDetailRes.data.product_nm}</div>
                             <div className=" flex gap-2">
-                                <p className=" text-base text-[#f06652]" >{`${ProductDetailRes.data.fee_rate}%`}</p>
-                                <p className=" text-gray-500 line-through">{formatNumber(ProductDetailRes.data.supply_price)}</p>
+                                <div className="flex gap-1">{rating.map(star => star === 1 ? <FaStar color="#f06652" /> : <FaStar color="#727476" />)}</div>
+                                {/* <div className="flex gap-1">{rating.map(star => star)}</div> */}
+                                <div className=" text-sm text-[#f06652]">{`${formatNumber(ProductDetailRes.data.review_cnt)}개 리뷰`}</div>
+                            </div>
+                            {ProductDetailRes.data.fee_rate !== 0 &&
+                                <div className=" flex gap-2">
+                                    <p className=" text-base text-[#f06652]" >{`${ProductDetailRes.data.fee_rate}%`}</p>
+                                    <p className=" text-gray-500 line-through">{formatNumber(ProductDetailRes.data.supply_price)}</p>
+                                </div>
+                            }
+                            <p className=" font-bold text-2xl">{formatNumber(ProductDetailRes.data.sale_price)}<span className=" font-normal text-lg">원</span> </p>
+                            <div className=" flex gap-4">
+                                <p className=" text-gray-400">적립금</p>
+                                <p className=" text-black">1% 적립</p>
+                            </div>
+                            <div className=" flex gap-4">
+                                <p className=" text-gray-400">배송비</p>
+                                <p className=" text-black">3,500원 (70,000원 이상 구매시 무료배송)</p>
+                            </div>
+                            {optionMain.map((opt, index) => opt.opt_gb === "C" && (
+                                <select onChange={(e) => getOptIndex(e.target.value, index + 1)} className=" p-1 border-[1px] border-gray-400 rounded-md" name="" id={`OPT_${opt.opt_gb}_${index + 1}`}>
+                                    <option value="">{opt.opt_nm1}</option>
+
+                                    {ProductDetailRes.data.OPTION_C.map(optC => optC.opt_cd1 === opt.opt_cd1 && (
+                                        <option value={`${optC.opt_cd2}`} >{`${optC.opt_nm2} ${optC.opt_price != 0 ? `(+${formatNumber(optC.opt_price)}원)` : ""}`}</option>
+                                    ))}
+                                </select>
+                            ))}
+
+                            <div className=" flex justify-end gap-2 items-center">
+                                <FaBell color="#F6BC25" />
+                                <a className=" text-[#3AA1FF] text-sm" href="#">재입고 알리미 신청</a>
+                            </div>
+                            <p className={`${OptIActive ? " text-slate-600 font-semibold" : "text-gray-400"}`}>추가 구성</p>
+                            {ProductDetailRes.data.optionBases.map((opt, index) => opt.opt_gb === "I" && (
+                                <select onChange={(e) => OptionISelect(e, index)} className=" p-1 border-[1px] border-gray-400 rounded-md" name="" id={`OPT_I_${index}`}>
+                                    <option value={`${opt.opt_cd1}`}>{opt.opt_nm1}</option>
+                                    {ProductDetailRes.data.OPTION_I.map(optI => optI.opt_cd1 === opt.opt_cd1 && (
+                                        <option value={`${optI.opt_cd2}`}>{`${optI.opt_nm2} ${optI.opt_price != 0 ? `(+${formatNumber(optI.opt_price)}원)` : ""}`}</option>
+                                    ))}
+                                </select>
+                            ))}
+
+                            <div className=" grid grid-cols-4 h-14 text-white gap-2">
+                                <p className=" col-span-2 text-center flex items-center justify-center bg-gray-900">구매하기</p>
+                                <div className=" flex justify-center items-center gap-1 h-full bg-[#c8877a]">
+                                    <GoGift />
+                                    <p>선물하기</p>
+                                </div>
+                                <p className=" h-full border-[1px] border-gray-400 text-gray-700 flex items-center justify-center">장바구니 담기</p>
+                            </div>
+                            <div className=" flex gap-2 text-sm text-gray-400 justify-end items-center">
+                                <CiCircleInfo size={20} />
+                                <p>선물하기 안내</p>
+                            </div>
+                            <div className=" grid grid-cols-2 gap-2 text-lg font-semibold">
+                                <div className=" flex gap-2 items-center justify-center p-3 bg-[#00DE5A]">
+                                    <img src="/logo/naver_pay_logo.png" alt="" />
+                                    <p>구매하기</p>
+                                </div>
+                                <div className=" flex gap-2 items-center justify-center p-3 bg-[#FEE102]">
+                                    <img src="/logo/kakao_pay_logo.png" alt="" />
+                                    <p>구매하기</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>}
+                <div className=" flex gap-2 text-xl font-bold">Most Loved <span className=" text-lg font-semibold">다른 고객들이 많이 본 상품</span></div>
+                <div className=" w-full">
+                    <Swiper>
+                        <SwiperSlide></SwiperSlide>
+                    </Swiper>
+                </div>
+                <div className=" flex flex-col">
+                    <div className=" w-full grid grid-cols-4 text-center bg-gray-100">
+                        <div className={`hover:bg-white p-2 hover:cursor-pointer border-[2px] ${DetailTab === 1 ? " border-transparent border-b-black bg-white" : " border-transparent"}`} onClick={() => setDetailTab(1)}>상품상세</div>
+                        <div className={`hover:bg-white p-2 hover:cursor-pointer border-[2px] ${DetailTab === 2 ? " border-transparent border-b-black bg-white" : " border-transparent"}`} onClick={() => setDetailTab(2)}>구매안내</div>
+                        <div className={`hover:bg-white p-2 hover:cursor-pointer border-[2px] ${DetailTab === 3 ? " border-transparent border-b-black bg-white" : " border-transparent"}`} onClick={() => setDetailTab(3)}>{`리뷰 ${formatNumber(ProductDetailRes?.data.review_cnt ? ProductDetailRes?.data.review_cnt : 0)}`}</div>
+                        <div className={`hover:bg-white p-2 hover:cursor-pointer border-[2px] ${DetailTab === 4 ? " border-transparent border-b-black bg-white" : " border-transparent"}`} onClick={() => setDetailTab(4)}>상품 문의</div>
+                    </div>
+                    <div className=" w-full min-h-[1000px]">
+                        {/* ------------------DETAIL TAB -------------- */}
+                        {DetailTab === 1 &&
+                            <div className={`${DetailShow ? " h-fit" : " h-[1000px] overflow-hidden"}  relative flex flex-col items-center`}>
+                                {parse(ProductDetailRes?.data.productDetail.content ? ProductDetailRes?.data.productDetail.content.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace('margin: 0 auto;', 'margin: 0;') : "")}
+                                <div className=" flex flex-col absolute bottom-0 w-full">
+                                    {!DetailShow && <div className=" h-[1000px] bg-gradient-to-t from-white"></div>}
+                                    <div className=" bg-white bottom-0 flex gap-3 justify-center items-center p-2 text-lg font-semibold border-[1px] border-gray-700 rounded hover:cursor-pointer"
+                                        onClick={() => DetailShow ? setDetailShow(false) : setDetailShow(true)}>
+                                        <p>상품 설명 더보기</p>
+                                        {DetailShow ? <MdOutlineKeyboardArrowUp size={20} /> : <MdOutlineKeyboardArrowDown size={20} />}
+                                    </div>
+                                </div>
                             </div>
                         }
-                        <p className=" font-bold text-2xl">{formatNumber(ProductDetailRes.data.sale_price)}<span className=" font-normal text-lg">원</span> </p>
-                        <div className=" flex gap-4">
-                            <p className=" text-gray-400">적립금</p>
-                            <p className=" text-black">1% 적립</p>
-                        </div>
-                        <div className=" flex gap-4">
-                            <p className=" text-gray-400">배송비</p>
-                            <p className=" text-black">3,500원 (70,000원 이상 구매시 무료배송)</p>
-                        </div>
-                        {optionMain.map((opt, index) => opt.opt_gb === "C" && (
-                            <select onChange={(e) => getOptIndex(e.target.value, index + 1)} className=" p-1 border-[1px] border-gray-400 rounded-md" name="" id={`OPT_${opt.opt_gb}_${index + 1}`}>
-                                <option value="">{opt.opt_nm1}</option>
-
-                                {ProductDetailRes.data.OPTION_C.map(optC => optC.opt_cd1 === opt.opt_cd1 && (
-                                    <option value={`${optC.opt_cd2}`} >{`${optC.opt_nm2} ${optC.opt_price != 0 ? `(+${formatNumber(optC.opt_price)}원)` : ""}`}</option>
-                                ))}
-                            </select>
-                        ))}
-
-                        <div className=" flex justify-end gap-2 items-center">
-                            <FaBell color="#F6BC25" />
-                            <a className=" text-[#3AA1FF] text-sm" href="#">재입고 알리미 신청</a>
-                        </div>
-                        <p className={`${OptIActive ? " text-slate-600 font-semibold" : "text-gray-400"}`}>추가 구성</p>
-                        {ProductDetailRes.data.optionBases.map((opt, index) => opt.opt_gb === "I" && (
-                            <select onChange={(e) => OptionISelect(e, index)} className=" p-1 border-[1px] border-gray-400 rounded-md" name="" id={`OPT_I_${index}`}>
-                                <option value={`${opt.opt_cd1}`}>{opt.opt_nm1}</option>
-                                {ProductDetailRes.data.OPTION_I.map(optI => optI.opt_cd1 === opt.opt_cd1 && (
-                                    <option value={`${optI.opt_cd2}`}>{`${optI.opt_nm2} ${optI.opt_price != 0 ? `(+${formatNumber(optI.opt_price)}원)` : ""}`}</option>
-                                ))}
-                            </select>
-                        ))}
-
-                        <div className=" grid grid-cols-4 h-14 text-white gap-2">
-                            <p className=" col-span-2 text-center flex items-center justify-center bg-gray-900">구매하기</p>
-                            <div className=" flex justify-center items-center gap-1 h-full bg-[#c8877a]">
-                                <GoGift />
-                                <p>선물하기</p>
+                        {/* ------------------BUYING GUIDE TAB -------------- */}
+                        {DetailTab === 2 &&
+                            <div className=" h-fit flex flex-col items-center  ">
+                                {parse(ProductDetailRes?.data.productCon.content2 ? ProductDetailRes.data.productCon.content2 : "")}
                             </div>
-                            <p className=" h-full border-[1px] border-gray-400 text-gray-700 flex items-center justify-center">장바구니 담기</p>
-                        </div>
-                        <div className=" flex gap-2 text-sm text-gray-400 justify-end items-center">
-                            <CiCircleInfo size={20} />
-                            <p>선물하기 안내</p>
-                        </div>
-                        <div className=" grid grid-cols-2 gap-2 text-lg font-semibold">
-                            <div className=" flex gap-2 items-center justify-center p-3 bg-[#00DE5A]">
-                                <img src="/logo/naver_pay_logo.png" alt="" />
-                                <p>구매하기</p>
-                            </div>
-                            <div className=" flex gap-2 items-center justify-center p-3 bg-[#FEE102]">
-                                <img src="/logo/kakao_pay_logo.png" alt="" />
-                                <p>구매하기</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>}
-            <div className=" flex gap-2 text-xl font-bold">Most Loved <span className=" text-lg font-semibold">다른 고객들이 많이 본 상품</span></div>
-            <div className=" w-full">
-                <Swiper>
-                    <SwiperSlide></SwiperSlide>
-                </Swiper>
-            </div>
-            <div className=" flex flex-col">
-                <div className=" w-full grid grid-cols-4 text-center bg-gray-100">
-                    <div className={`hover:bg-white p-2 hover:cursor-pointer border-[2px] ${DetailTab === 1 ? " border-transparent border-b-black bg-white" : " border-transparent"}`} onClick={() => setDetailTab(1)}>상품상세</div>
-                    <div className={`hover:bg-white p-2 hover:cursor-pointer border-[2px] ${DetailTab === 2 ? " border-transparent border-b-black bg-white" : " border-transparent"}`} onClick={() => setDetailTab(2)}>구매안내</div>
-                    <div className={`hover:bg-white p-2 hover:cursor-pointer border-[2px] ${DetailTab === 3 ? " border-transparent border-b-black bg-white" : " border-transparent"}`} onClick={() => setDetailTab(3)}>{`리뷰 ${formatNumber(ProductDetailRes?.data.review_cnt ? ProductDetailRes?.data.review_cnt : 0)}`}</div>
-                    <div className={`hover:bg-white p-2 hover:cursor-pointer border-[2px] ${DetailTab === 4 ? " border-transparent border-b-black bg-white" : " border-transparent"}`} onClick={() => setDetailTab(4)}>상품 문의</div>
-                </div>
-                <div className=" w-full min-h-[1000px]">
-                    {/* ------------------DETAIL TAB -------------- */}
-                    {DetailTab === 1 &&
-                        <div className={`${DetailShow ? " h-fit" : " h-[1000px] overflow-hidden"}  relative flex flex-col items-center`}>
-                            {parse(ProductDetailRes?.data.productDetail.content ? ProductDetailRes?.data.productDetail.content.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace('margin: 0 auto;', 'margin: 0;') : "")}
-                            <div className=" flex flex-col absolute bottom-0 w-full">
-                                {!DetailShow && <div className=" h-[1000px] bg-gradient-to-t from-white"></div>}
-                                <div className=" bg-white bottom-0 flex gap-3 justify-center items-center p-2 text-lg font-semibold border-[1px] border-gray-700 rounded hover:cursor-pointer"
-                                    onClick={() => DetailShow ? setDetailShow(false) : setDetailShow(true)}>
-                                    <p>상품 설명 더보기</p>
-                                    {DetailShow ? <MdOutlineKeyboardArrowUp size={20} /> : <MdOutlineKeyboardArrowDown size={20} />}
+                        }
+                        {/* ------------------REVIEW TAB -------------- */}
+                        {DetailTab === 3 &&
+                            <div className=" py-5 flex flex-col gap-5">
+                                <p className=" text-xl font-semibold">리뷰 <span className=" text-[#f06652]">{formatNumber(ProductDetailRes?.data.review_cnt ? ProductDetailRes?.data.review_cnt : 0)}</span></p>
+                                <div className=" grid grid-cols-6 gap-2 p-2">
+                                    {AllReviewImage.map((image, index) => (
+                                        index < 6 &&
+                                        <div className=" w-full rounded-md relative aspect-square" onClick={() => ImageListString.onAddData(AllReviewImage)}>
+                                            <img className="rounded-md w-full h-full select-none" src={image} alt="" />
+                                            {index === 5 && AllReviewImage.length > 0 &&
+                                                <div className=" w-full h-full absolute rounded-md backdrop-brightness-50 top-0 left-0 flex justify-center items-center text-white text-2xl font-semibold">{`+${AllReviewImage.length - 6}`}</div>
+                                            }
+                                        </div>
+                                    ))}
                                 </div>
-                            </div>
-                        </div>
-                    }
-                    {/* ------------------BUYING GUIDE TAB -------------- */}
-                    {DetailTab === 2 &&
-                        <div className=" h-fit flex flex-col items-center  ">
-                            {parse(ProductDetailRes?.data.productCon.content2 ? ProductDetailRes.data.productCon.content2 : "")}
-                        </div>
-                    }
-                    {/* ------------------REVIEW TAB -------------- */}
-                    {DetailTab === 3 &&
-                        <div className=" py-5 flex flex-col gap-5">
-                            <p className=" text-xl font-semibold">리뷰 <span className=" text-[#f06652]">{formatNumber(ProductDetailRes?.data.review_cnt ? ProductDetailRes?.data.review_cnt : 0)}</span></p>
-                            <div className=" grid grid-cols-6 gap-2 p-2">
-                                {AllReviewImage.map((image, index) => (
-                                    index < 6 &&
-                                    <div className=" w-full rounded-md relative aspect-square" onClick={() => ImageListString.onAddData(AllReviewImage)}>
-                                        <img className="rounded-md w-full h-full select-none" src={image} alt="" />
-                                        {index === 5 && AllReviewImage.length > 0 &&
-                                            <div className=" w-full h-full absolute rounded-md backdrop-brightness-50 top-0 left-0 flex justify-center items-center text-white text-2xl font-semibold">{`+${AllReviewImage.length - 6}`}</div>
-                                        }
-                                    </div>
-                                ))}
-                            </div>
-                            <div className=" flex flex-col gap-10">
-                                {ProductReview.map(rv => (
-                                    <div className=" flex flex-col gap-1">
-                                        <div className=" flex justify-between items-center w-full gap-5">
-                                            <div className=" flex flex-col justify-between gap-2 ">
-                                                <div className=" flex gap-3 items-center w-fit">
-                                                    <div className=" flex gap-1">
-                                                        {getReviewRating(rv.point).map(rating => rating === 1 ? <FaStar color="#f06652" /> : <FaStar color="#727476" />)}
+                                <div className=" flex flex-col gap-10">
+                                    {ProductReview.map(rv => (
+                                        <div className=" flex flex-col gap-1">
+                                            <div className=" flex justify-between items-center w-full gap-5">
+                                                <div className=" flex flex-col justify-between gap-2 ">
+                                                    <div className=" flex gap-3 items-center w-fit">
+                                                        <div className=" flex gap-1">
+                                                            {getReviewRating(rv.point).map(rating => rating === 1 ? <FaStar color="#f06652" /> : <FaStar color="#727476" />)}
+                                                        </div>
+                                                        <div className=" text-gray-400 text-sm">{rv.user_id.slice(0, 3) + '***'}</div>
+                                                        <div className=" text-gray-400 text-sm">{rv.reg_date.split(" ")[0]}</div>
                                                     </div>
-                                                    <div className=" text-gray-400 text-sm">{rv.user_id.slice(0, 3) + '***'}</div>
-                                                    <div className=" text-gray-400 text-sm">{rv.reg_date.split(" ")[0]}</div>
+                                                    <h3 className=" font-bold text-lg">{rv.title}</h3>
+                                                    <p className=" text-sm text-gray-600 w-fit">{rv.content}</p>
                                                 </div>
-                                                <h3 className=" font-bold text-lg">{rv.title}</h3>
-                                                <p className=" text-sm text-gray-600 w-fit">{rv.content}</p>
+                                                <div className=" relative w-24 flex-shrink-0" onClick={() => ImageListString.onAddData(getReviewDetailImageList(rv))}>
+                                                    <img className=" rounded aspect-square" src={getReviewDetailImageList(rv)[0]} alt="" />
+                                                    {getReviewDetailImageList(rv).length > 1 && <div className=" w-full h-full absolute rounded-md backdrop-brightness-50 top-0 left-0 flex justify-center items-center text-white text-2xl font-semibold">{`+${getReviewDetailImageList(rv).length - 1}`}</div>}
+                                                </div>
                                             </div>
-                                            <div className=" relative w-24 flex-shrink-0" onClick={() => ImageListString.onAddData(getReviewDetailImageList(rv))}>
-                                                <img className=" rounded aspect-square" src={getReviewDetailImageList(rv)[0]} alt="" />
-                                                {getReviewDetailImageList(rv).length > 1 && <div className=" w-full h-full absolute rounded-md backdrop-brightness-50 top-0 left-0 flex justify-center items-center text-white text-2xl font-semibold">{`+${getReviewDetailImageList(rv).length - 1}`}</div>}
+                                            <div className=" flex items-center gap-2 text-[#c8877a] p-2 hover:bg-gray-100 hover:cursor-pointer rounded-sm w-fit " onClick={() => showComment(rv.use_review_seq)}>
+                                                <p>접기</p>
+                                                <MdOutlineKeyboardArrowUp color="#c8877a" size={15} />
                                             </div>
-                                        </div>
-                                        <div className=" flex items-center gap-2 text-[#c8877a] p-2 hover:bg-gray-100 hover:cursor-pointer rounded-sm w-fit " onClick={() => showComment(rv.use_review_seq)}>
-                                            <p>접기</p>
-                                            <MdOutlineKeyboardArrowUp color="#c8877a" size={15} />
-                                        </div>
-                                        <div className=" flex gap-3 items-center">
-                                            <p className={`text-sm p-1 border-[1px] ${rv.like_yn !== 0 ? "text-[#f06652] border-[#f06652]" : "border-gray-400 text-gray-400"}`}>추천해요</p>
-                                            <p className="text-sm text-gray-400 p-1 font-semibold">{`댓글(${rv.comment_cnt})`}</p>
-                                        </div>
-                                        <div className=" flex flex-col gap-2 hidden" id={`rv_${rv.use_review_seq}`}>
-                                            <div className=" flex flex-col gap-2 p-2">
-                                                {rv.comment.map(cmt => (
-                                                    <div className=" w-full rounded-md bg-gray-100 text-gray-600 flex flex-col gap-2 p-2">
-                                                        <p className=" text-sm">{cmt.comment}</p>
-                                                        <p className=" text-gray-400">{`${cmt.user_id} • ${cmt.reg_date.split(" ")[0]}`}</p>
-                                                    </div>
-                                                ))}
+                                            <div className=" flex gap-3 items-center">
+                                                <p className={`text-sm p-1 border-[1px] ${rv.like_yn !== 0 ? "text-[#f06652] border-[#f06652]" : "border-gray-400 text-gray-400"}`}>추천해요</p>
+                                                <p className="text-sm text-gray-400 p-1 font-semibold">{`댓글(${rv.comment_cnt})`}</p>
                                             </div>
-                                            <div className=" flex gap-2 w-full">
-                                                <input className="p-1 text-sm border-[1px] rounded-sm border-gray-400 flex-grow" type="text" name="" id="" />
-                                                <p className=" bg-slate-800 py-2 px-4 text-white">등록</p>
+                                            <div className=" flex flex-col gap-2 hidden" id={`rv_${rv.use_review_seq}`}>
+                                                <div className=" flex flex-col gap-2 p-2">
+                                                    {rv.comment.map(cmt => (
+                                                        <div className=" w-full rounded-md bg-gray-100 text-gray-600 flex flex-col gap-2 p-2">
+                                                            <p className=" text-sm">{cmt.comment}</p>
+                                                            <p className=" text-gray-400">{`${cmt.user_id} • ${cmt.reg_date.split(" ")[0]}`}</p>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                                <div className=" flex gap-2 w-full">
+                                                    <input className="p-1 text-sm border-[1px] rounded-sm border-gray-400 flex-grow" type="text" name="" id="" />
+                                                    <p className=" bg-slate-800 py-2 px-4 text-white">등록</p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className=" flex justify-center items-center gap-5 text-lg">
-                                <MdOutlineKeyboardArrowLeft className=" hover:cursor-pointer" color={NavReviewPage > 1 ? "#111" : "#999"} size={25} onClick={() => NavReviewPage > 1 && setNavReviewPage(x => x - 1)} />
-                                <div className=" flex gap-5 text-gray-400">
-                                    {NavReviewPage > 1 && <p className="hover:text-[#c8877a] hover:cursor-pointer">1</p>}
-                                    {NavReviewPage > 1 && <p>. . . </p>}
-                                    {PageList.map(page => page <= 5 * NavReviewPage && page > 5 * NavReviewPage - 5 &&
-                                        <p className={`${CurrentReviewPage === page && "text-gray-900 font-bold"} hover:text-[#c8877a] hover:cursor-pointer`}
-                                            onClick={() => setCurrentReviewPage(page)}>{page}</p>
-                                    )}
-                                    {NavReviewPage <= Math.floor(PageList[PageList.length - 1] / 5) && <p>. . .</p>}
-                                    {NavReviewPage <= Math.floor(PageList[PageList.length - 1] / 5) && <p className="hover:text-[#c8877a] hover:cursor-pointer" onClick={() => {
-                                        setCurrentReviewPage(PageList[PageList.length - 1])
-                                        setNavReviewPage(Math.ceil(PageList[PageList.length - 1] / 5))
-                                    }}>{PageList[PageList.length - 1]} </p>}
+                                    ))}
                                 </div>
+                                <div className=" flex justify-center items-center gap-5 text-lg">
+                                    <MdOutlineKeyboardArrowLeft className=" hover:cursor-pointer" color={NavReviewPage > 1 ? "#111" : "#999"} size={25} onClick={() => NavReviewPage > 1 && setNavReviewPage(x => x - 1)} />
+                                    <div className=" flex gap-5 text-gray-400">
+                                        {NavReviewPage > 1 && <p className="hover:text-[#c8877a] hover:cursor-pointer">1</p>}
+                                        {NavReviewPage > 1 && <p>. . . </p>}
+                                        {PageList.map(page => page <= 5 * NavReviewPage && page > 5 * NavReviewPage - 5 &&
+                                            <p className={`${CurrentReviewPage === page && "text-gray-900 font-bold"} hover:text-[#c8877a] hover:cursor-pointer`}
+                                                onClick={() => setCurrentReviewPage(page)}>{page}</p>
+                                        )}
+                                        {NavReviewPage <= Math.floor(PageList[PageList.length - 1] / 5) && <p>. . .</p>}
+                                        {NavReviewPage <= Math.floor(PageList[PageList.length - 1] / 5) && <p className="hover:text-[#c8877a] hover:cursor-pointer" onClick={() => {
+                                            setCurrentReviewPage(PageList[PageList.length - 1])
+                                            setNavReviewPage(Math.ceil(PageList[PageList.length - 1] / 5))
+                                        }}>{PageList[PageList.length - 1]} </p>}
+                                    </div>
 
-                                <MdOutlineKeyboardArrowRight className=" hover:cursor-pointer" color={NavReviewPage <= Math.floor(PageList[PageList.length - 1] / 5) ? "#111" : "#999"} size={25} onClick={() => NavReviewPage <= Math.floor(PageList[PageList.length - 1] / 5) && setNavReviewPage(x => x + 1)} />
-                            </div>
-                        </div>
-                    }
-                    {/* ------------------QNA TAB -------------- */}
-                    {DetailTab === 4 && ProductQna?.data && ProductQna?.data.length > 0 &&
-                        <div className=" flex flex-col gap-5 p-5">
-                            <h1 className=" font-bold text-black text-lg">문의 <span className=" text-[#f06652]">{ProductQna.total_count}</span></h1>
-                            <div className=" flex flex-col gap-5">
-                                {ProductQna.data.map(quest => (
-                                    <div className=" flex justify-between items-center p-2">
-                                        <div className=" flex flex-col gap-2">
-                                            <h3 className=" text-sm text-gray-400">{`${quest.writer_id} • ${quest.reg_date.split(" ")[0]}`}</h3>
-                                            <p className=" text-gray-600">{quest.title}</p>
-                                        </div>
-                                        <h2 className={`${quest.reply_date !== "" ? "text-[#f06652]" : "text-gray-400"} p-2 rounded-sm hover:bg-gray-100 hover:cursor-pointer flex-shrink-0`}>{quest.reply_date !== "" ? "답변 완료" : "답변 대기"}</h2>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className=" flex gap-5 justify-center items-center">
-                                <MdOutlineKeyboardArrowLeft className=" hover:cursor-pointer" color={NavQnaPage > 1 ? "#111" : "#999"} size={25} onClick={() => NavQnaPage > 1 && setNavReviewPage(x => x - 1)} />
-                                <div className=" flex gap-5">
-                                    {QnaPageList.map(page => page <= 5 * NavQnaPage && page > 5 * NavQnaPage - 5 &&
-                                        <p className={`${CurrentQnaPage === page && "text-gray-900 font-bold"} hover:text-[#c8877a] hover:cursor-pointer`}
-                                            onClick={() => setCurrentQnaPage(page)}>{page}</p>)}
-                                    {NavQnaPage <= ProductQna.total_page && ProductQna.total_page > 5 && <p>. . .</p>}
-                                    {NavQnaPage <= ProductQna.total_page && ProductQna.total_page > 5 && <p className="hover:text-[#c8877a] hover:cursor-pointer" onClick={() => {
-                                        setCurrentQnaPage(ProductQna.total_page)
-                                        setNavQnaPage(ProductQna.total_page)
-                                    }}>{ProductQna.total_page} </p>}
+                                    <MdOutlineKeyboardArrowRight className=" hover:cursor-pointer" color={NavReviewPage <= Math.floor(PageList[PageList.length - 1] / 5) ? "#111" : "#999"} size={25} onClick={() => NavReviewPage <= Math.floor(PageList[PageList.length - 1] / 5) && setNavReviewPage(x => x + 1)} />
                                 </div>
-                                <MdOutlineKeyboardArrowRight className=" hover:cursor-pointer" color={NavQnaPage <= ProductQna.total_page && ProductQna.total_page > 5 ? "#111" : "#999"} size={25} onClick={() => NavQnaPage <= ProductQna.total_page && ProductQna.total_page > 5 && setNavQnaPage(x => x + 1)} />
                             </div>
-                        </div>
-                    }
+                        }
+                        {/* ------------------QNA TAB -------------- */}
+                        {DetailTab === 4 && ProductQna?.data && ProductQna?.data.length > 0 &&
+                            <div className=" flex flex-col gap-5 p-5">
+                                <h1 className=" font-bold text-black text-lg">문의 <span className=" text-[#f06652]">{ProductQna.total_count}</span></h1>
+                                <div className=" flex flex-col gap-5">
+                                    {ProductQna.data.map(quest => (
+                                        <div className=" flex justify-between items-center p-2">
+                                            <div className=" flex flex-col gap-2">
+                                                <h3 className=" text-sm text-gray-400">{`${quest.writer_id} • ${quest.reg_date.split(" ")[0]}`}</h3>
+                                                <p className=" text-gray-600">{quest.title}</p>
+                                            </div>
+                                            <h2 className={`${quest.reply_date !== "" ? "text-[#f06652]" : "text-gray-400"} p-2 rounded-sm hover:bg-gray-100 hover:cursor-pointer flex-shrink-0`}>{quest.reply_date !== "" ? "답변 완료" : "답변 대기"}</h2>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className=" flex gap-5 justify-center items-center">
+                                    <MdOutlineKeyboardArrowLeft className=" hover:cursor-pointer" color={NavQnaPage > 1 ? "#111" : "#999"} size={25} onClick={() => NavQnaPage > 1 && setNavReviewPage(x => x - 1)} />
+                                    <div className=" flex gap-5">
+                                        {QnaPageList.map(page => page <= 5 * NavQnaPage && page > 5 * NavQnaPage - 5 &&
+                                            <p className={`${CurrentQnaPage === page && "text-gray-900 font-bold"} hover:text-[#c8877a] hover:cursor-pointer`}
+                                                onClick={() => setCurrentQnaPage(page)}>{page}</p>)}
+                                        {NavQnaPage <= ProductQna.total_page && ProductQna.total_page > 5 && <p>. . .</p>}
+                                        {NavQnaPage <= ProductQna.total_page && ProductQna.total_page > 5 && <p className="hover:text-[#c8877a] hover:cursor-pointer" onClick={() => {
+                                            setCurrentQnaPage(ProductQna.total_page)
+                                            setNavQnaPage(ProductQna.total_page)
+                                        }}>{ProductQna.total_page} </p>}
+                                    </div>
+                                    <MdOutlineKeyboardArrowRight className=" hover:cursor-pointer" color={NavQnaPage <= ProductQna.total_page && ProductQna.total_page > 5 ? "#111" : "#999"} size={25} onClick={() => NavQnaPage <= ProductQna.total_page && ProductQna.total_page > 5 && setNavQnaPage(x => x + 1)} />
+                                </div>
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
-        </div>
-    )
+        )
 }
 const getReviewImageList = (useReview: UseReview[] | undefined | null) => {
     var imageList: string[] = []
