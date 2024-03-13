@@ -15,6 +15,7 @@ import { FaStar } from "react-icons/fa";
 import useProductProps from "@/hooks/useProductProps"
 import { ProductCount } from "@/types/api_res/ProductList/ProductCount"
 import { formatNumber } from "@/utils/function"
+import Layout from "@/components/Layout"
 
 export default () => {
     const ProductProps = useProductProps()
@@ -71,89 +72,91 @@ export default () => {
         data.response && ProductProps.setPriceRangeInit(`${data.response[0].price_sale_min}|${data.response[0].price_sale_max}`)
     }
     return (
-        <div className="w-[1200px] m-auto mt-[140px] h-fit bg-slate-50 flex flex-col">
-            <div className=" bg-slate-50">
-                <div className="  rounded-lg w-[1200px] bg-white h-fit p-3 flex justify-between">
-                    <div className=" flex items-center gap-4">
-                        <Link href={"/"}><GoHome size={20} /></Link>
-                        <ul className=" text-sm flex gap-4">
-                            {NaviCate?.success &&
-                                NaviCate.data.map(cate =>
-                                    <Link href={`/shop/product/product_list?CAT_CODE=${cate.CAT_CODE}`}>
-                                        <li id={`cate_navi_li_${cate.CAT_CODE}`} className=" flex items-center gap-1 relative z-0" onMouseEnter={() => showNaviCate(cate.CAT_CODE)}>
-                                            <IoMdArrowDropright />
-                                            <p>{cate.CAT_NAME}</p>
-                                            <div id={`cate_navi_${cate.CAT_CODE}`} className=" absolute top-0 left-0 hidden">
-                                                <ul className="rounded-md border-gray-300 bg-white border-[1px] h-fit w-max">
-                                                    {(cate.detail as Detail[]).map(cate2 => (
-                                                        <Link href={`/shop/product/product_list?CAT_CODE=${cate2.CAT_CODE}`}>
-                                                            <li className="p-2 text-gray-700 hover:text-rose-400 ">{cate2.CAT_NAME}</li>
-                                                        </Link>
-                                                    ))}
-                                                </ul>
-                                            </div>
-                                        </li>
-                                    </Link>
-
-                                )
-                            }
-                            {ProductCountApiRes && <li className=" font-semibold">{`총 ${formatNumber(ProductCountApiRes?.response[0].CNT)}`}</li>}
-                        </ul>
-
-                    </div>
-                    <div className="flex gap-4">
-                        <div className=" flex items-center gap-3">
-                            <input className=" w-4 h-4 accent-teal-700" type="checkbox" name="" id="cb_view_collection" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { ProductProps.setViewCollection(e.target.checked) }} /><label htmlFor="cb_view_collection">모음전 보기</label>
-                        </div>
-                        <div className=" flex items-center gap-3">
-                            <input className=" w-4 h-4 accent-teal-700" type="checkbox" name="" id="cb_sale" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { ProductProps.setSale(e.target.checked) }} /><label htmlFor="cb_sale">특가 상품만</label>
-                        </div>
-
-                        <div className={`flex justify-center items-center p-1 gap-2 border-[1px] rounded-md relative ${ProductProps.point === 0 ? "border-gray-500" : "border-[#f06652]"}`} onClick={() => ShowRating ? setShowRating(false) : setShowRating(true)}>
-                            <p>별점</p>
-                            <IoMdArrowDropdown />
-                            {ShowRating &&
-                                <div className="z-10 absolute top-0 right-0">
-                                    <ul className=" p-2 bg-white border-[1px] border-gray-500 rounded-md mt-10 drop-shadow-md shadow-md">
-                                        {ratingStar.map((x, index) => (
-                                            <li className="flex gap-2 w-max hover:text-[#f06652] hover:cursor-pointer p-1" onClick={() => { ProductProps.setPoint(ratingStar.length - index) }}>
-                                                <div className=" flex gap-1">{x.map(y => y === 1 ? <FaStar color="#f06652" /> : <FaStar color="#727476" />)} </div>
-                                                <p>{`${ratingStar.length - index} 이상`}</p>
+        <Layout noLayout={false}>
+            <div className="w-[1200px] m-auto mt-[140px] h-fit bg-slate-50 flex flex-col">
+                <div className=" bg-slate-50">
+                    <div className="  rounded-lg w-[1200px] bg-white h-fit p-3 flex justify-between">
+                        <div className=" flex items-center gap-4">
+                            <Link href={"/"}><GoHome size={20} /></Link>
+                            <ul className=" text-sm flex gap-4">
+                                {NaviCate?.success &&
+                                    NaviCate.data.map(cate =>
+                                        <Link href={`/shop/product/product_list?CAT_CODE=${cate.CAT_CODE}`}>
+                                            <li id={`cate_navi_li_${cate.CAT_CODE}`} className=" flex items-center gap-1 relative z-0" onMouseEnter={() => showNaviCate(cate.CAT_CODE)}>
+                                                <IoMdArrowDropright />
+                                                <p>{cate.CAT_NAME}</p>
+                                                <div id={`cate_navi_${cate.CAT_CODE}`} className=" absolute top-0 left-0 hidden">
+                                                    <ul className="rounded-md border-gray-300 bg-white border-[1px] h-fit w-max">
+                                                        {(cate.detail as Detail[]).map(cate2 => (
+                                                            <Link href={`/shop/product/product_list?CAT_CODE=${cate2.CAT_CODE}`}>
+                                                                <li className="p-2 text-gray-700 hover:text-rose-400 ">{cate2.CAT_NAME}</li>
+                                                            </Link>
+                                                        ))}
+                                                    </ul>
+                                                </div>
                                             </li>
+                                        </Link>
+
+                                    )
+                                }
+                                {ProductCountApiRes && <li className=" font-semibold">{`총 ${formatNumber(ProductCountApiRes?.response[0].CNT)}`}</li>}
+                            </ul>
+
+                        </div>
+                        <div className="flex gap-4">
+                            <div className=" flex items-center gap-3">
+                                <input className=" w-4 h-4 accent-teal-700" type="checkbox" name="" id="cb_view_collection" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { ProductProps.setViewCollection(e.target.checked) }} /><label htmlFor="cb_view_collection">모음전 보기</label>
+                            </div>
+                            <div className=" flex items-center gap-3">
+                                <input className=" w-4 h-4 accent-teal-700" type="checkbox" name="" id="cb_sale" onChange={(e: React.ChangeEvent<HTMLInputElement>) => { ProductProps.setSale(e.target.checked) }} /><label htmlFor="cb_sale">특가 상품만</label>
+                            </div>
+
+                            <div className={`flex justify-center items-center p-1 gap-2 border-[1px] rounded-md relative ${ProductProps.point === 0 ? "border-gray-500" : "border-[#f06652]"}`} onClick={() => ShowRating ? setShowRating(false) : setShowRating(true)}>
+                                <p>별점</p>
+                                <IoMdArrowDropdown />
+                                {ShowRating &&
+                                    <div className="z-10 absolute top-0 right-0">
+                                        <ul className=" p-2 bg-white border-[1px] border-gray-500 rounded-md mt-10 drop-shadow-md shadow-md">
+                                            {ratingStar.map((x, index) => (
+                                                <li className="flex gap-2 w-max hover:text-[#f06652] hover:cursor-pointer p-1" onClick={() => { ProductProps.setPoint(ratingStar.length - index) }}>
+                                                    <div className=" flex gap-1">{x.map(y => y === 1 ? <FaStar color="#f06652" /> : <FaStar color="#727476" />)} </div>
+                                                    <p>{`${ratingStar.length - index} 이상`}</p>
+                                                </li>
+                                            ))}
+                                            <li className=" mt-2 p-1 text-center border-gray-400 border-[1px] rounded-md hover:cursor-pointer" onClick={() => { ProductProps.setPoint(0) }}>초기화</li>
+                                        </ul>
+                                    </div>}
+                            </div>
+                            <div className={`flex justify-center items-center p-1 gap-2 border-[1px] rounded-md relative ${ProductProps.sort === 0 ? "border-gray-500" : "border-[#f06652]"}`} onClick={() => { ShowSort ? setShowSort(false) : setShowSort(true) }}>
+                                <p>{sortString[ProductProps.sort]}</p>
+                                <IoMdArrowDropdown />
+                                {ShowSort && <div className=" z-10 absolute top-0 left-0">
+                                    <ul className=" p-2 bg-white border-[1px] border-gray-500 rounded-md mt-10 drop-shadow-md shadow-md">
+                                        {sortString.map((sort, index) => (
+                                            <li className={`${Sort === index && " font-black"} w-max hover:cursor-pointer`} onClick={() => {
+                                                setSort(index)
+                                                ProductProps.setSort(index)
+                                            }}>{sort}</li>
+
                                         ))}
-                                        <li className=" mt-2 p-1 text-center border-gray-400 border-[1px] rounded-md hover:cursor-pointer" onClick={() => { ProductProps.setPoint(0) }}>초기화</li>
+
                                     </ul>
                                 </div>}
+                            </div>
+                            <div className=" flex justify-center items-center gap-1">
+                                <IoGrid size={30} color={`${!ListMode ? "#0F766E" : ""}`} className={`${!ListMode ? "border-[#0F766E]" : "border-gray-500"} p-1 border-[1px] rounded-md hover:cursor-pointer`} onClick={() => setListMode(false)} />
+                                <IoListOutline size={30} color={`${ListMode ? "#0F766E" : ""}`} className={`${ListMode ? "border-[#0F766E]" : "border-gray-500"} p-1 border-[1px] rounded-md hover:cursor-pointer`} onClick={() => setListMode(true)} />
+                            </div>
                         </div>
-                        <div className={`flex justify-center items-center p-1 gap-2 border-[1px] rounded-md relative ${ProductProps.sort === 0 ? "border-gray-500" : "border-[#f06652]"}`} onClick={() => { ShowSort ? setShowSort(false) : setShowSort(true) }}>
-                            <p>{sortString[ProductProps.sort]}</p>
-                            <IoMdArrowDropdown />
-                            {ShowSort && <div className=" z-10 absolute top-0 left-0">
-                                <ul className=" p-2 bg-white border-[1px] border-gray-500 rounded-md mt-10 drop-shadow-md shadow-md">
-                                    {sortString.map((sort, index) => (
-                                        <li className={`${Sort === index && " font-black"} w-max hover:cursor-pointer`} onClick={() => {
-                                            setSort(index)
-                                            ProductProps.setSort(index)
-                                        }}>{sort}</li>
 
-                                    ))}
-
-                                </ul>
-                            </div>}
-                        </div>
-                        <div className=" flex justify-center items-center gap-1">
-                            <IoGrid size={30} color={`${!ListMode ? "#0F766E" : ""}`} className={`${!ListMode ? "border-[#0F766E]" : "border-gray-500"} p-1 border-[1px] rounded-md hover:cursor-pointer`} onClick={() => setListMode(false)} />
-                            <IoListOutline size={30} color={`${ListMode ? "#0F766E" : ""}`} className={`${ListMode ? "border-[#0F766E]" : "border-gray-500"} p-1 border-[1px] rounded-md hover:cursor-pointer`} onClick={() => setListMode(true)} />
-                        </div>
                     </div>
+                </div>
 
+                <div className=" flex justify-between mt-4">
+                    <Sidebar />
+                    <Content list_mode={ListMode} onProductCountChange={getProductCount} />
                 </div>
             </div>
-
-            <div className=" flex justify-between mt-4">
-                <Sidebar />
-                <Content list_mode={ListMode} onProductCountChange={getProductCount} />
-            </div>
-        </div>
+        </Layout>
     )
 }

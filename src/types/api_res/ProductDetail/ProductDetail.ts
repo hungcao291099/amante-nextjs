@@ -25,6 +25,7 @@ export interface Data {
     keywd: string;
     product_content: null;
     icon: string;
+    icon_: string[]
     free_trans_yn: number;
     discount_gb: string;
     product_relation_yn: null;

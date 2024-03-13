@@ -1,6 +1,7 @@
 export interface PRODUCT_CODE_API_GET {
     success: boolean;
     data: Data;
+    message: string;
 }
 
 export interface Data {

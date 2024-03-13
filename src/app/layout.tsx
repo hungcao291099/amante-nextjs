@@ -5,7 +5,7 @@ import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import CartModal from "@/components/CartModal";
 import ImageListBackDrop from "@/components/ImageListBackDrop";
-import ProgressBar from "@/components/ProgressBar";
+import GiftInfo from "@/components/ProductDetail/DetailTab/GiftInfo";
 
 export default function RootLayout({
   children,
@@ -16,12 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="text-gray-800 bg-slate-50 h-screen">
-        <ProgressBar />
-        <Header />
         {children}
-        <Footer />
-        <CartModal />
-        <ImageListBackDrop />
       </body>
     </html>
 

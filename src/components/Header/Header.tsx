@@ -55,7 +55,7 @@ export default () => {
 
     if (categories)
         return (
-            <div className=" w-full fixed bg-slate-50 flex justify-center items-center p-3 z-10 top-0">
+            <div className=" w-full fixed bg-slate-50 flex justify-center items-center z-10 top-0">
                 <div className="w-[1200px] rounded-md bg-white py-3 px-5 flex flex-col gap-3 justify-between">
                     <div className="flex w-full justify-between">
                         <div className=" flex gap-2 items-center">

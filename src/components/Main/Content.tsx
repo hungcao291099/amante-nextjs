@@ -10,7 +10,7 @@ import MainKeyword from "./Content/mainKeyword"
 
 export default () => {
     return (
-        <div className="w-full flex flex-col gap-5 top-0 translate-y-36 rounded-md z-0">
+        <div className="w-full flex flex-col gap-5 rounded-md z-0 mb-5">
             <Banner1 />
             <Banner2 />
             <NewProduct />
