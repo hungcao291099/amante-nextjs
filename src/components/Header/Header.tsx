@@ -2,6 +2,7 @@
 import { Cate_list_2, Cate_list_3, Category } from "@/types/api_res/category";
 import api from "@/utils/instants";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CiShoppingCart, CiUser } from "react-icons/ci";
 import { CiSearch } from "react-icons/ci";
@@ -9,7 +10,11 @@ export default () => {
     const [categories, setCategory] = useState<Category>()
     const [categories2, setCategory2] = useState<Cate_list_2[]>([])
     const [categories3, setCategory3] = useState<Cate_list_3[]>([])
+    const router = useRouter()
+    var token = window.localStorage.getItem("token")
+    const [verify, setverify] = useState(false)
     useEffect(() => {
+        token ? setverify(true) : setverify(false)
         const fetchData = async () => {
             try {
                 const data = await api({
@@ -53,6 +58,12 @@ export default () => {
         categories3.length > 0 ? cate_depth3?.classList.remove("hidden") : cate_depth3?.classList.add("hidden")
     })
 
+    const handleLogout = () => {
+        window.localStorage.removeItem("user_data")
+        window.localStorage.removeItem("token")
+        alert("로그아웃되었습니다.")
+        setverify(false)
+    }
     if (categories)
         return (
             <div className=" w-full fixed bg-slate-50 flex justify-center items-center z-10 top-0">
@@ -64,8 +75,17 @@ export default () => {
                         </div>
                         <div className=" inline-flex gap-3 w-fit h-auto items-center relative">
                             <CiShoppingCart size={30} className=" hover:cursor-pointer hover:bg-[#d7e4e2] rounded-md p-1" />
-                            <p className="hover:cursor-pointer hover:bg-[#d7e4e2] rounded-md p-1">로그인</p>
-                            <p className="hover:cursor-pointer hover:bg-[#d7e4e2] rounded-md p-1">회원가입</p>
+                            {verify ?
+                                <Link href={"/member/mypage"}><p className="hover:cursor-pointer hover:bg-[#d7e4e2] rounded-md p-1">마이페이지</p></Link>
+                                :
+                                <Link href={"/login"}><p className="hover:cursor-pointer hover:bg-[#d7e4e2] rounded-md p-1 ">로그인</p></Link>
+                            }
+                            {verify ?
+                                <p className="hover:cursor-pointer hover:bg-[#d7e4e2] rounded-md p-1 " onClick={() => handleLogout()}>로그아웃</p>
+                                :
+                                <Link href={"/join"}><p className="hover:cursor-pointer hover:bg-[#d7e4e2] rounded-md p-1 ">회원가입</p></Link>
+                            }
+
                             <p className="hover:cursor-pointer hover:bg-[#d7e4e2] rounded-md p-1">고객센터</p>
                             <p className=" absolute right-0 top-0 -translate-x-1/3 -translate-y-3/4 py-1 px-2 rounded-lg text-white rounded-bl-none bg-[#FF9382] text-[12px]">가입 시 125,000원</p>
                         </div>

@@ -1,11 +1,19 @@
+'use client'
 import Layout from "@/components/Layout"
+import { Login } from "@/types/api_res/Login/Login";
 import api from "@/utils/instants";
-import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { ChangeEvent, useEffect, useState } from "react";
 
 
 export default () => {
+    const [username, setUsername] = useState("")
+    const [password, setPassword] = useState("")
+    const [isLoading, setisLoading] = useState(false)
+    const router = useRouter()
     const handleLogin = (username: string, password: string) => {
         const fetchData = async () => {
+            setisLoading(true)
             try {
                 const data = await api({
                     url: `/member/login`,
@@ -15,11 +23,18 @@ export default () => {
                         passwd: password
                     }
                 });
+                var res: Login = data.data
+                !res.success && alert(`${res.message}`)
+                res.success && window.localStorage.setItem("login_data", JSON.stringify(res.data))
+                res.success && window.localStorage.setItem("token", res.data.refresh_token)
+                res.success && router.push('/')
             } catch (error) {
                 console.log(error);
             }
+            setisLoading(false)
+
         };
-        fetchData();
+        !username || !password ? alert("Your field is blank") : fetchData();
     }
     return (
         <Layout noLayout={true}>
@@ -27,15 +42,15 @@ export default () => {
                 <img className="" src="/logo/pc_amante_logo.png" alt="" />
                 <div className=" w-[1000px] flex justify-between items-center">
                     <div className=" w-[400px] flex flex-col gap-3">
-                        <input className=" p-2 rounded border-[1px] border-gray-400 outline-none" type="text" name="" id="username" placeholder="아이디" />
-                        <input className=" p-2 rounded border-[1px] border-gray-400 outline-none" type="password" name="" id="password" placeholder="비밀번호" />
+                        <input className="p-2 rounded border-[1px] outline-none border-gray-400" type="text" name="" id="username" placeholder="아이디" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)} />
+                        <input className="p-2 rounded border-[1px] outline-none border-gray-400" type="password" name="" id="password" placeholder="비밀번호" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} onKeyDown={(e) => { e.key === "Enter" && handleLogin(username, password) }} />
                         <div className=" flex gap-3 p-2">
                             <input className=" accent-[#c8877a] w-5" type="checkbox" name="" id="save" />
                             <label htmlFor="save">아이디저장</label>
                             <input className=" accent-[#c8877a] w-5" type="checkbox" name="" id="auto_login" />
                             <label htmlFor="auto_login">자동로그인</label>
                         </div>
-                        <div className=" p-3 bg-[#c8877a] text-white text-lg font-black text-center rounded hover:cursor-pointer my-3">로그인</div>
+                        <div className={`${isLoading ? "bg-[#c8877a]/80" : "bg-[#c8877a]"} p-3 text-white text-lg font-black text-center rounded hover:cursor-pointer my-3`} onClick={() => handleLogin(username, password)}>{isLoading ? "로그인 . . ." : "로그인"}</div>
                         <div className=" grid grid-cols-2 gap-3 my-3">
                             <div className=" p-2 text-lg text-center rounded bg-gray-200">ID/PW 찾기</div>
                             <div className=" p-2 text-lg text-center rounded bg-[#c8877a]/50">일반회원가입</div>
