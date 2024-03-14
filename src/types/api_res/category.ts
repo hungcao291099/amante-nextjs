@@ -11,7 +11,7 @@ export interface Data {
     CODE: string;
     SORT_SEQ: string;
     cate_list_2: Cate_list_2[];
-    file_nm: File_nm[] | unknown[];
+    file_nm: File_nm[] | [];
 }
 
 export interface Cate_list_2 {
@@ -22,7 +22,7 @@ export interface Cate_list_2 {
     CODE: string;
     SORT_SEQ: string;
     cate_list_3: Cate_list_3[];
-    file_nm: File_nm[] | unknown[];
+    file_nm: File_nm[] | [];
 }
 
 export interface File_nm {
@@ -37,6 +37,6 @@ export interface Cate_list_3 {
     lv: number;
     CODE: string;
     SORT_SEQ: string;
-    file_nm: File_nm[] | unknown[];
+    file_nm: File_nm[] | [];
 }
 

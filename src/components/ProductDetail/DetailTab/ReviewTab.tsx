@@ -157,7 +157,10 @@ const ReviewTab: React.FC<{ ProductDetailRes: PRODUCT_DETAIL_API_RES }> = ({ Pro
             <div className=" flex justify-center items-center gap-5 text-lg">
                 <MdOutlineKeyboardArrowLeft className=" hover:cursor-pointer" color={NavReviewPage > 1 ? "#111" : "#999"} size={25} onClick={() => NavReviewPage > 1 && setNavReviewPage(x => x - 1)} />
                 <div className=" flex gap-5 text-gray-400">
-                    {NavReviewPage > 1 && <p className="hover:text-[#c8877a] hover:cursor-pointer">1</p>}
+                    {NavReviewPage > 1 && <p className="hover:text-[#c8877a] hover:cursor-pointer" onClick={() => {
+                        setCurrentReviewPage(1)
+                        setNavReviewPage(1)
+                    }}>1</p>}
                     {NavReviewPage > 1 && <p>. . . </p>}
                     {PageList.map(page => page <= 5 * NavReviewPage && page > 5 * NavReviewPage - 5 &&
                         <p className={`${CurrentReviewPage === page && "text-gray-900 font-bold"} hover:text-[#c8877a] hover:cursor-pointer`}

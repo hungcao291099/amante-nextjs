@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CiShoppingCart, CiUser } from "react-icons/ci";
 import { CiSearch } from "react-icons/ci";
+import useShowCartSide from "@/hooks/useCardSide";
+import TopBanner from "../Main/Content/TopBanner";
 export default () => {
     const [categories, setCategory] = useState<Category>()
     const [categories2, setCategory2] = useState<Cate_list_2[]>([])
@@ -13,8 +15,11 @@ export default () => {
     const router = useRouter()
     var token = window.localStorage.getItem("token")
     const [verify, setverify] = useState(false)
+    const CartSide = useShowCartSide()
     useEffect(() => {
-        token ? setverify(true) : setverify(false)
+        if (typeof window !== 'undefined') {
+            token ? setverify(true) : setverify(false)
+        }
         const fetchData = async () => {
             try {
                 const data = await api({
@@ -66,7 +71,8 @@ export default () => {
     }
     if (categories)
         return (
-            <div className=" w-full fixed bg-slate-50 flex justify-center items-center z-10 top-0">
+            <div className=" w-full fixed bg-slate-50 flex flex-col justify-center items-center z-10 top-0">
+                <TopBanner />
                 <div className="w-[1200px] rounded-md bg-white py-3 px-5 flex flex-col gap-3 justify-between">
                     <div className="flex w-full justify-between">
                         <div className=" flex gap-2 items-center">
@@ -74,7 +80,12 @@ export default () => {
                             <p className=" text-gray-400 text-sm">공간을 새롭게, 일상을 특별하게</p>
                         </div>
                         <div className=" inline-flex gap-3 w-fit h-auto items-center relative">
-                            <CiShoppingCart size={30} className=" hover:cursor-pointer hover:bg-[#d7e4e2] rounded-md p-1" />
+                            <div className="relative p-1" >
+                                <CiShoppingCart size={30} className="hover:cursor-pointer hover:bg-[#d7e4e2] rounded-md flex items-center justify-center " />
+                                {CartSide.count > 0 &&
+                                    <div className=" absolute top-0 right-0 text-sm w-5 h-5 flex items-center justify-center rounded-full bg-[#c8877a] translate-x-1 -translate-y-1 text-white">{CartSide.count}</div>
+                                }
+                            </div>
                             {verify ?
                                 <Link href={"/member/mypage"}><p className="hover:cursor-pointer hover:bg-[#d7e4e2] rounded-md p-1">마이페이지</p></Link>
                                 :
