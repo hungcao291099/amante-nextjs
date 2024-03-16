@@ -5,7 +5,7 @@ import "swiper/css";
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { useEffect, useState } from 'react';
-import { Banner2 } from '@/types/api_res/banner2';
+import { Banner2 } from '@/types/api_res/Main/banner2';
 export default () => {
     const [ImgBannerApi, setImageBannerApi] = useState<Banner2>()
     useEffect(() => {
@@ -26,10 +26,6 @@ export default () => {
         return (
             <div className=" w-full ">
                 <Swiper
-                    className='rounded-lg bg-white'
-                    pagination={{
-                        dynamicBullets: true,
-                    }}
                     autoplay={{
                         delay: 3000,
                         disableOnInteraction: false,

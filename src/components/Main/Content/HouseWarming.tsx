@@ -5,8 +5,8 @@ import "swiper/css";
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { useEffect, useState } from 'react';
-import { Banner2 } from '@/types/api_res/banner2';
-import { HouseWarming } from '@/types/api_res/house_warming';
+import { Banner2 } from '@/types/api_res/Main/banner2';
+import { HouseWarming } from '@/types/api_res/Main/house_warming';
 import { FaRegCommentDots } from "react-icons/fa";
 export default () => {
     const [ImgBannerApi, setImageBannerApi] = useState<HouseWarming>()

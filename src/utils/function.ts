@@ -27,3 +27,24 @@ export const getReviewImageList = (useReview: UseReview[]) => {
     })
     return imageList
 }
+export function checkDevice() {
+    var userAgent = navigator.userAgent;
+    var isMobile = /Mobi/.test(userAgent);
+    var isTablet = /(tablet|ipad|playbook|silk)|(android(?!. *mobi))/i.test(
+        userAgent
+    );
+
+    if (isMobile) {
+        return "mobile";
+    } else if (isTablet) {
+        return "tablet";
+    } else {
+        return "desktop";
+    }
+}
+export const getInnerText = (string: string) => {
+    const tempElement = document.createElement('div');
+    tempElement.innerHTML = string
+    const textContent = tempElement.textContent || tempElement.innerText;
+    return textContent
+}

@@ -29,6 +29,9 @@ const DetailGeneral: React.FC<{ ProductDetailRes: PRODUCT_DETAIL_API_RES }> = ({
             }
 
         }
+
+
+
     }, [])
 
 

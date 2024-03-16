@@ -61,16 +61,7 @@
     transform-origin: bottom left;
   }
 
-  .tab-selected::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    transform: scaleX(1);
-    height: 3px;
-    bottom: -2px;
-    left: 0;
-    background-color: #B24934;
-  }
+
 
   .range-slider {
     position: relative;

@@ -5,7 +5,7 @@ import api from "@/utils/instants";
 import { redirect, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { MouseEvent } from 'react';
-import { Cate_list_2, Cate_list_3, Category, Data } from "@/types/api_res/category";
+import { Cate_list_2, Cate_list_3, Category, Data } from "@/types/api_res/Main/category";
 import { DETAILED, Response, TotalProp } from "@/types/api_res/Category/TotalProps";
 import { BiCheckbox } from "react-icons/bi";
 import { useRouter } from "next/navigation";

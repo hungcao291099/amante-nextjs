@@ -5,7 +5,7 @@ import "swiper/css";
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { useEffect, useState } from 'react';
-import { SpecialList } from '@/types/api_res/special_list';
+import { SpecialList } from '@/types/api_res/Main/special_list';
 export default () => {
     const [ImgBannerApi, setImageBannerApi] = useState<SpecialList>()
     useEffect(() => {

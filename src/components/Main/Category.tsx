@@ -1,4 +1,4 @@
-import { Category, Data } from "@/types/api_res/category"
+import { Category, Data } from "@/types/api_res/Main/category"
 import parse from "html-react-parser";
 import { HiOutlineHome } from "react-icons/hi";
 import { CiStar } from "react-icons/ci";

@@ -5,7 +5,7 @@ import "swiper/css";
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { useEffect, useState } from 'react';
-import { insta_api } from '@/types/api_res/ins_api';
+import { insta_api } from '@/types/api_res/Main/ins_api';
 export default () => {
     const [ImgBannerApi, setImageBannerApi] = useState<insta_api[]>([])
     useEffect(() => {

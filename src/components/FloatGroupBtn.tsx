@@ -2,7 +2,8 @@
 import { useEffect, useState } from "react";
 import { MdOutlineKeyboardArrowUp } from "react-icons/md"
 import { TbClockSearch } from "react-icons/tb";
-import useShowCartSide from "@/hooks/useCardSide";
+import useShowCartSide from "@/hooks/useRecentSide";
+import { checkDevice } from "@/utils/function";
 
 export default () => {
     const CartSide = useShowCartSide()
@@ -31,7 +32,7 @@ export default () => {
     }, []);
 
     return (
-        <div className=" fixed bottom-0 right-0 z-20 p-3 m-3 flex flex-col gap-5">
+        <div className={`fixed bottom-0 right-0 z-20 p-3 m-3 flex flex-col gap-5 ${checkDevice() === "mobile" && "mb-24"}`}>
             <div className=" w-10 h-10 rounded-full drop-shadow-md bg-white flex justify-center items-center" onClick={() => CartSide.onOpen()}><TbClockSearch size={20} color="#333" /></div>
             {isVisible &&
                 <div className=" w-10 h-10 rounded-full animate-bounce drop-shadow-md bg-white flex justify-center items-center" onClick={() => ScrolltoTop()}><MdOutlineKeyboardArrowUp size={20} color="#333" /></div>

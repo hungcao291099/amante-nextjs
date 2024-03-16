@@ -7,7 +7,7 @@ import MainBannner from "@/components/Main/Content/MainBannner";
 export default function Main() {
   return (
     <Layout noLayout={false}>
-      <div className=" mt-32 flex flex-col gap-5">
+      <div className=" mt-32 flex flex-col gap-5 z-0">
         <MainBannner />
         <Content />
       </div>

@@ -5,7 +5,7 @@ import "swiper/css";
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { useEffect, useState } from 'react';
-import { MainKeyWord } from '@/types/api_res/main_keyword';
+import { MainKeyWord } from '@/types/api_res/Main/main_keyword';
 export default () => {
     const [ImgBannerApi, setImageBannerApi] = useState<MainKeyWord>()
     useEffect(() => {

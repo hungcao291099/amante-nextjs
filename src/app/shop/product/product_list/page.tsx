@@ -1,7 +1,7 @@
 "use client"
 import Content from "@/components/ProductList/Content"
 import Sidebar from "@/components/ProductList/SideBar"
-import { Cate_list_2, Category } from "@/types/api_res/category"
+import { Cate_list_2, Category } from "@/types/api_res/Main/category"
 import api from "@/utils/instants"
 import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -73,7 +73,7 @@ export default () => {
     }
     return (
         <Layout noLayout={false}>
-            <div className="w-[1200px] m-auto mt-[140px] h-fit bg-slate-50 flex flex-col">
+            <div className="w-[1200px] m-auto mt-48 h-fit bg-slate-50 flex flex-col">
                 <div className=" bg-slate-50">
                     <div className="  rounded-lg w-[1200px] bg-white h-fit p-3 flex justify-between">
                         <div className=" flex items-center gap-4">
