@@ -32,11 +32,10 @@ export default () => {
     }, []);
 
     return (
-        <div className={`fixed bottom-0 right-0 z-20 p-3 m-3 flex flex-col gap-5 ${checkDevice() === "mobile" && "mb-24"}`}>
-            <div className=" w-10 h-10 rounded-full drop-shadow-md bg-white flex justify-center items-center" onClick={() => CartSide.onOpen()}><TbClockSearch size={20} color="#333" /></div>
-            {isVisible &&
-                <div className=" w-10 h-10 rounded-full animate-bounce drop-shadow-md bg-white flex justify-center items-center" onClick={() => ScrolltoTop()}><MdOutlineKeyboardArrowUp size={20} color="#333" /></div>
-            }
+        <div className={`fixed bottom-0 right-0 z-30 p-3 m-3 flex flex-col gap-5 items-center justify-center ${checkDevice() === "mobile" && "mb-24"}`}>
+            <div className={`  rounded-full drop-shadow-md bg-white flex justify-center items-center ${CartSide.isOpen ? " w-0 h-0" : "w-10 h-10"} transition-all duration-300`} onClick={() => CartSide.onOpen()}><TbClockSearch size={20} color="#333" /></div>
+            <div className={` rounded-full animate-bounce drop-shadow-md bg-white flex justify-center items-center transition-all duration-300 ${isVisible ? "w-10 h-10" : " w-0 h-0"}`} onClick={() => ScrolltoTop()}><MdOutlineKeyboardArrowUp size={20} color="#333" /></div>
+
         </div>
     )
 }

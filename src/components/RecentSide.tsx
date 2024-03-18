@@ -114,7 +114,7 @@ export default () => {
 
     return (
 
-        <div className={`fixed w-full h-full z-50 top-0 left-0 transition-all duration-300 ${RecentSide.isOpen ? " visible" : "invisible"}`}>
+        <div className={`fixed w-full h-full z-20 top-0 left-0 transition-all duration-300 mb-24 ${RecentSide.isOpen ? " visible" : "invisible"}`}>
             <div className=" absolute top-0 left-0 w-full h-full bg-gray-800/30 " onClick={() => RecentSide.onClose()}></div>
             <div className={`absolute top-0 right-0 h-screen ${checkDevice() === "mobile" ? "w-full" : "w-[400px]"} z-20 flex flex-col gap-5 p-3 bg-white transition-transform duration-300 ${!RecentSide.isOpen && (checkDevice() === "mobile" ? "translate-x-full" : "translate-x-[400px]")}`} id="recent-sidebar">
                 <div className="flex flex-col gap-4">

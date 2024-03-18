@@ -144,4 +144,38 @@
     transform: translate(-50%, -50%);
   }
 
+  .animation-slide {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.5s ease;
+  }
+
+  .animation-slide.slide-down {
+    animation: slideDown 0.5s ease forwards;
+  }
+
+  .animation-slide.slide-up {
+    animation: slideUp 0.5s ease forwards;
+  }
+
+  @keyframes slideDown {
+    from {
+      max-height: 0;
+    }
+
+    to {
+      max-height: 2000px;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      max-height: 2000px;
+    }
+
+    to {
+      max-height: 0;
+    }
+  }
+
 }

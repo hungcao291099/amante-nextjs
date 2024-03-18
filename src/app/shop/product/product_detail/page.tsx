@@ -85,7 +85,7 @@ export default () => {
     else
         return (
 
-            <Layout noLayout={false}>
+            <Layout noLayout={false} noHeader={false} noFloat={false} noFooter={false}>
                 <div className=" w-[1200px] m-auto mt-44 rounded-md mb-3 p-3 h-fit bg-white ">
                     {ProductDetailRes?.success ?
                         <div className="flex flex-col gap-4">

@@ -12,6 +12,9 @@ import CateSide from "./CateSide";
 interface IProps {
     children: Readonly<React.ReactNode>;
     noLayout: boolean;
+    noHeader: boolean;
+    noFooter: boolean;
+    noFloat: boolean
 }
 
 
@@ -21,19 +24,22 @@ export default (props: IProps) => {
             {!props.noLayout ?
                 <>
 
-                    <Header />
+                    {!props.noHeader && <Header />}
                     {props.children}
                     <RecentSide />
                     <CateSide />
                     <CartModal />
                     <ImageListBackDrop />
                     <GiftInfo />
-                    <FloatGroupBtn />
-                    <Footer />
+                    {!props.noFloat && <FloatGroupBtn />}
+                    {!props.noFooter && <Footer />}
                     <MobileNav />
                 </>
                 :
-                <>{props.children}</>
+                <>
+                    {props.children}
+
+                </>
             }
         </>
     )

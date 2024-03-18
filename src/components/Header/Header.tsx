@@ -14,12 +14,11 @@ export default () => {
     const [categories2, setCategory2] = useState<Cate_list_2[]>([])
     const [categories3, setCategory3] = useState<Cate_list_3[]>([])
     const router = useRouter()
-    var token = window.localStorage.getItem("token")
     const [verify, setverify] = useState(false)
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            token ? setverify(true) : setverify(false)
-        }
+        var token = window.localStorage.getItem("token")
+        token ? setverify(true) : setverify(false)
+
         const fetchData = async () => {
             try {
                 const data = await api({
